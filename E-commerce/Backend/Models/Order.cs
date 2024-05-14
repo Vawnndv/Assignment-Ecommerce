@@ -14,7 +14,6 @@ namespace Backend.Models
 
         public int AppUserId { get; set; }
 
-        [ForeignKey("AppUserId")]
         public virtual AppUser AppUser { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

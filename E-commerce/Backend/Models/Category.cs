@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Backend.Models
 {
-    [Table("Categories")]
     public class Category
     {
         public int Id { get; set; }
