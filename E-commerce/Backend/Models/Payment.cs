@@ -6,6 +6,7 @@ namespace Backend.Models
     {
         public int Id { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         public DateTime PaymentDate { get; set; }

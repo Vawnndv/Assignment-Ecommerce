@@ -9,12 +9,12 @@ namespace Backend.Models
         public DateTime OrderDate { get; set; }
 
         public string Status { get; set; }
-
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 
-        public int AppUserId { get; set; }
+        public string AppUserId { get; set; }
 
-        public virtual AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; }
 
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
