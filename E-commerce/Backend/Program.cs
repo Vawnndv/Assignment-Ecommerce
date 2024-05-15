@@ -1,6 +1,7 @@
 using Backend.Data;
 using Backend.Interfaces;
 using Backend.Models;
+using Backend.Repository;
 using Backend.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -90,6 +91,7 @@ builder.Services.AddAuthentication(options =>
 
 // Implement Repository And Service
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.csproj", "{E200D71D-1BB9-44DF-AC6A-A8BE8A0390F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce-Customers-Site", "Ecommerce-Customers-Site\Ecommerce-Customers-Site.csproj", "{2B65408F-9B19-48A4-9326-B00037C54891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce-Customers-Site", "Ecommerce-Customers-Site\Ecommerce-Customers-Site.csproj", "{2B65408F-9B19-48A4-9326-B00037C54891}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared-ViewModels", "Shared-ViewModels\Shared-ViewModels.csproj", "{146A5638-B448-487E-B707-95BC2B959A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared-ViewModels", "Shared-ViewModels\Shared-ViewModels.csproj", "{146A5638-B448-487E-B707-95BC2B959A00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
