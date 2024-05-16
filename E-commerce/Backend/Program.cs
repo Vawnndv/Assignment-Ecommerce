@@ -92,6 +92,7 @@ builder.Services.AddAuthentication(options =>
 // Implement Repository And Service
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
