@@ -14,6 +14,5 @@ namespace Shared_ViewModels.Product
         public int Rating { get; set; }
         public string Review { get; set; }
         public int ProductId { get; set; }
-        public string AppUserId { get; set; }
     }
 }

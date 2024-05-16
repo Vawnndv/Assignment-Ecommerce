@@ -19,8 +19,5 @@ namespace Shared_ViewModels.Product
 
         [Required]
         public int ProductId { get; set; }
-        
-        [Required]
-        public string AppUserId { get; set; }
     }
 }

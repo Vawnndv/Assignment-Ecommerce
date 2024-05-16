@@ -15,11 +15,5 @@ namespace Shared_ViewModels.Product
 
         [MaxLength(100, ErrorMessage = "Description of product cannot be over 100 over characters")]
         public string Review { get; set; }
-
-        [Required]
-        public int ProductId { get; set; }
-
-        [Required]
-        public string AppUserId { get; set; }
     }
 }
