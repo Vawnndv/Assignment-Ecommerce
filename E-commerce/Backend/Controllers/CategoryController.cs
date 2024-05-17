@@ -9,6 +9,7 @@ using Shared_ViewModels.Category;
 namespace Backend.Controllers
 {
     [Route("api/category")]
+    [ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly ApplicationDBContext _context;

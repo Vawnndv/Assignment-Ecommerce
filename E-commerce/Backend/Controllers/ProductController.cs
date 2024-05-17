@@ -10,6 +10,7 @@ using Shared_ViewModels.Product;
 namespace Backend.Controllers
 {
     [Route("api/product")]
+    [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepo;

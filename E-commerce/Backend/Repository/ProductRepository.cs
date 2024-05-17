@@ -180,6 +180,26 @@ namespace Backend.Repository
             existingProduct.Discount = productDto.Discount;
             existingProduct.UpdatedDate = DateTime.Now;
 
+            // Remove ProductTypes not present in the DTO
+            foreach (var existingProductType in existingProduct.ProductTypes.ToList())
+            {
+                if (!productDto.ProductTypes.Any(dto => dto.Id == existingProductType.Id))
+                {
+                    // Remove the ProductType
+                    existingProduct.ProductTypes.Remove(existingProductType);
+                }
+                 // Remove ProductImages not present in the DTO for all ProductTypes
+                 foreach (var existingProductImage in existingProductType.ProductImages)
+                 {
+                    var productTypeDto = productDto.ProductTypes.FirstOrDefault(pi => pi.Id == existingProductType.Id);
+                    if (productTypeDto != null && !productTypeDto.ProductImages.Any(dto => dto.Id == existingProductImage.Id))
+                    {
+                        // Remove the ProductImages
+                        existingProductType.ProductImages.Remove(existingProductImage);
+                    }
+                 }
+            }
+
             // Update or add ProductTypes
             foreach (var productTypeDto in productDto.ProductTypes)
             {
@@ -197,9 +217,13 @@ namespace Backend.Repository
                     {
                         Type = productTypeDto.Type,
                         Description = productTypeDto.Description,
-                        ProductId = existingProduct.Id // Set the ProductId
+                        ProductId = existingProduct.Id, // Set the ProductId
+                        ProductImages = new List<ProductImage>()
                     };
                     existingProduct.ProductTypes.Add(newProductType);
+
+                    // In case add new ProductTypes => Return this new ProductType to next Handle ProductImages
+                    existingProductType = existingProduct.ProductTypes.Last();
                 }
 
                 // Update or add ProductImages for the ProductType
@@ -222,26 +246,6 @@ namespace Backend.Repository
                         existingProductType.ProductImages.Add(newProductImage);
                     }
                 }
-            }
-
-            // Remove ProductTypes not present in the DTO
-            foreach (var existingProductType in existingProduct.ProductTypes.ToList())
-            {
-                if (!productDto.ProductTypes.Any(dto => dto.Id == existingProductType.Id))
-                {
-                    // Remove the ProductType
-                    existingProduct.ProductTypes.Remove(existingProductType);
-                }
-                 // Remove ProductImages not present in the DTO for all ProductTypes
-                 foreach (var existingProductImage in existingProductType.ProductImages)
-                 {
-                    var productTypeDto = productDto.ProductTypes.FirstOrDefault(pi => pi.Id == existingProductType.Id);
-                    if (productTypeDto != null && !productTypeDto.ProductImages.Any(dto => dto.Id == existingProductImage.Id))
-                    {
-                        // Remove the ProductImages
-                        existingProductType.ProductImages.Remove(existingProductImage);
-                    }
-                 }
             }
 
             await _context.SaveChangesAsync();

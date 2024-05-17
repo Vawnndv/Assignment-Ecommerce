@@ -16,5 +16,10 @@ namespace Backend.Models
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
+
+        public decimal CalculateTotalAmount()
+        {
+            return CartItems.Sum(item => item.Quantity * item.UnitPrice);
+        }
     }
 }
