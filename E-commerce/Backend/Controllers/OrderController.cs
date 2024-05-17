@@ -5,24 +5,25 @@ using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared_ViewModels.Cart;
-using Shared_ViewModels.Product;
+using Shared_ViewModels.Order;
+using Shared_ViewModels.Payment;
 
 namespace Backend.Controllers
 {
-    [Route("api/cart")]
+    [Route("api/order")]
     [ApiController]
-    public class CartController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly ICartRepository _cartRepo;
+        private readonly IOrderRepository _orderRepo;
         private readonly UserManager<AppUser> _userManager;
 
-        public CartController(UserManager<AppUser> userManager, ICartRepository cartRepo)
+        public OrderController(UserManager<AppUser> userManager, IOrderRepository orderRepo)
         {
+            _orderRepo = orderRepo;
             _userManager = userManager;
-            _cartRepo = cartRepo;
         }
 
-        // GET: api/cart
+        // GET: api/order
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
@@ -32,38 +33,38 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cart = await _cartRepo.GetAllAsync(appUser);
+            var order = await _orderRepo.GetAllAsync(appUser);
 
-            if (cart == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            var cartDto = cart.Select(s => s.ToCartDto());
+            var orderDto = order.Select(s => s.ToOrderDto());
 
-            return Ok(cartDto);
+            return Ok(orderDto);
         }
 
-        // GET: api/cart/{id}
+        // GET: api/order/{id}
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetById([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var cart = await _cartRepo.GetByIdAsync(id);
+            var order = await _orderRepo.GetByIdAsync(id);
 
-            if (cart == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return Ok(cart.ToCartDto());
+            return Ok(order.ToOrderDto());
         }
 
-        // POST: api/cart
+        // POST: api/order
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateCartRequestVmDto cartDto)
+        public async Task<ActionResult> Create([FromBody] CreatePaymentRequestVmDto paymentDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -71,15 +72,13 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cartModel = cartDto.ToCartFromCreateDTO(appUser);
-
-            await _cartRepo.CreateAsync(cartModel);
-            return CreatedAtAction(nameof(GetById), new { id = cartModel.Id }, cartModel.ToCartDto());
+            var orderModel = await _orderRepo.CreateAsync(appUser, paymentDto);
+            return CreatedAtAction(nameof(GetById), new { id = orderModel.Id }, orderModel.ToOrderDto());
         }
 
-        // PUT: api/cart/{id}
+        // PUT: api/order/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCartVmDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateOrderVmDto updateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -87,26 +86,26 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cartModel = await _cartRepo.UpdateAsync(id, updateDto);
+            var orderModel = await _orderRepo.UpdateAsync(id, updateDto);
 
-            if (cartModel == null)
+            if (orderModel == null)
             {
                 return NotFound();
             }
 
-            return Ok(cartModel.ToCartDto());
+            return Ok(orderModel.ToOrderDto());
         }
 
-        // DELETE: api/cart/{id}
+        // DELETE: api/order/{id}
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productModel = await _cartRepo.DeleteAsync(id);
+            var orderModel = await _orderRepo.DeleteAsync(id);
 
-            if (productModel == null)
+            if (orderModel == null)
             {
                 return NotFound();
             }
