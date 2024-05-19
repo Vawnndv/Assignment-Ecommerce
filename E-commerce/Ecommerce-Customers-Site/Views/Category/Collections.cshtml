@@ -1,0 +1,38 @@
+﻿@using Shared_ViewModels.Product
+@model IList<ProductVmDto>
+
+@{
+    ViewData["Title"] = "Category";
+}
+
+<div class="text-center">
+    <ul>
+        @if (Model == null)
+            return;
+
+        <div class="container my-3">
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                        @await Component.InvokeAsync("ProductCard", product)
+                    </div>
+                }
+            </div>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
+                    <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </ul>
+</div>

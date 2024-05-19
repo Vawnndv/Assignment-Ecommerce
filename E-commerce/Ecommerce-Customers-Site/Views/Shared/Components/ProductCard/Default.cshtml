@@ -1,0 +1,27 @@
+﻿@using Shared_ViewModels.Product
+@model ProductVmDto
+
+<div class="card h-60">
+    <img src="https://n1.sdlcdn.com/imgs/a/o/9/American-Tourister-SKI-Orange-68CM-SDL653114455-1-13cbd.JPG" class="card-img-top" alt="img">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+
+        <div class="my-2">
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9734;</span>
+        </div>
+
+        <p class="card-text">@Model.Description</p>
+        <p class="card-text">
+            <span class="text-decoration-line-through text-dark">@Model.Price.ToString("C")</span>
+            <span class="text-danger fw-bold ms-2">@((Model.Price * (1 - Model.Discount)).ToString("C"))</span>
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+            <button class="btn btn-outline-dark btn-lg" type="button">SEE DETAIL</button>
+            <button class="btn btn-lg btn-dark" type="button">ADD TO CART</button>
+        </div>
+    </div>
+</div>
