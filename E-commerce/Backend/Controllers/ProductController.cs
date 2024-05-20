@@ -1,11 +1,11 @@
-﻿using Backend.Helpers;
-using Backend.Interfaces;
+﻿using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
 using Backend.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Shared_ViewModels.Category;
 using Shared_ViewModels.Product;
+using Shared_ViewModels.Helpers;
 
 namespace Backend.Controllers
 {

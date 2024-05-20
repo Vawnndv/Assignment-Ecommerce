@@ -26,3 +26,24 @@ $(document).ready(function () {
     });
 });
 
+// Handle scroll list product view
+function scrollLeftListProductNew() {
+    const container = document.querySelector('.product-container-new');
+container.scrollBy({left: -300, behavior: 'smooth' });
+}
+
+function scrollRightListProductNew() {
+    const container = document.querySelector('.product-container-new');
+container.scrollBy({left: 300, behavior: 'smooth' });
+}
+
+// Handle scroll list product view
+function scrollLeftListProductDiscount() {
+    const container = document.querySelector('.product-container');
+    container.scrollBy({ left: -300, behavior: 'smooth' });
+}
+
+function scrollRightListProductDiscount() {
+    const container = document.querySelector('.product-container');
+    container.scrollBy({ left: 300, behavior: 'smooth' });
+}

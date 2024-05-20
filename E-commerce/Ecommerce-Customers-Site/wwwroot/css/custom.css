@@ -3,3 +3,57 @@
     font-size: 20px; /* Kích thước của sao */
     color: gold; /* Màu của sao */
 }
+
+
+/*  CSS For NavTab HomePage */
+.nav-pills {
+    font-size: 20px;
+}
+
+.nav-pills .nav-link.active {
+    border-bottom: 2px solid black; /* Add underline when active */
+    color: black !important; /* Change text color to black */
+    background-color: transparent;
+    font-weight: bold;
+}
+
+.nav-pills .nav-link {
+    color: black !important;
+}
+
+/* Show list product new and discount at homepage */
+
+.product-container {
+    display: flex;
+    overflow-x: hidden;
+}
+
+.left-arrow, .right-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.left-arrow {
+    left: 10px;
+}
+
+.right-arrow {
+    right: 10px;
+}
+
+/* CSS Footer */
+footer h5,
+footer h6 {
+    color: white; /* Màu trắng */
+}
+
+footer address, footer p {
+    color: lightgray
+}
+
+.list-unstyled a {
+    text-decoration: none;
+    color: antiquewhite
+}

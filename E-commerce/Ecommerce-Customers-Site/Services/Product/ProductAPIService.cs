@@ -1,5 +1,6 @@
 ﻿using Ecommerce_Customers_Site.Helpers;
 using Shared_ViewModels.Category;
+using Shared_ViewModels.Helpers;
 using Shared_ViewModels.Product;
 
 namespace Ecommerce_Customers_Site.Services.Product
@@ -16,7 +17,14 @@ namespace Ecommerce_Customers_Site.Services.Product
 
         public async Task<IList<ProductVmDto>> GetByCategoryId(int id)
         {
-            var response = await _client.GetAsync(BasePath + "/category/" + id);
+            var response = await _client.GetAsync($"{BasePath}/category/{id}");
+
+            return await response.ReadContentAsync<List<ProductVmDto>>();
+        }
+
+        public async Task<IList<ProductVmDto>> GetAll(QueryObject query)
+        {
+            var response = await _client.GetAsync($"{BasePath}?{QueryStringHelper.ToQueryString(query)}");
 
             return await response.ReadContentAsync<List<ProductVmDto>>();
         }

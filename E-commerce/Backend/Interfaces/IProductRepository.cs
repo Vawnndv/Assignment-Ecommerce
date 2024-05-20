@@ -1,6 +1,6 @@
-﻿using Backend.Helpers;
-using Backend.Models;
+﻿using Backend.Models;
 using Shared_ViewModels.Product;
+using Shared_ViewModels.Helpers;
 
 namespace Backend.Interfaces
 {

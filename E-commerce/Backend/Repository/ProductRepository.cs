@@ -1,9 +1,9 @@
 ﻿using Backend.Data;
-using Backend.Helpers;
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared_ViewModels.Product;
+using Shared_ViewModels.Helpers;
 
 namespace Backend.Repository
 {
