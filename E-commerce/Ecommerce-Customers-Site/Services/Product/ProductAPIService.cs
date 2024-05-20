@@ -15,9 +15,9 @@ namespace Ecommerce_Customers_Site.Services.Product
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<IList<ProductVmDto>> GetByCategoryId(int id)
+        public async Task<IList<ProductVmDto>> GetByCategoryId(int id, QueryObject query)
         {
-            var response = await _client.GetAsync($"{BasePath}/category/{id}");
+            var response = await _client.GetAsync($"{BasePath}/category/{id}?{QueryStringHelper.ToQueryString(query)}");
 
             return await response.ReadContentAsync<List<ProductVmDto>>();
         }
@@ -27,6 +27,13 @@ namespace Ecommerce_Customers_Site.Services.Product
             var response = await _client.GetAsync($"{BasePath}?{QueryStringHelper.ToQueryString(query)}");
 
             return await response.ReadContentAsync<List<ProductVmDto>>();
+        }
+
+        public async Task<int> GetNumOfProductPagesByCategory(int id, QueryObject query)
+        {
+            var response = await _client.GetAsync($"{BasePath}/category/numberpages/{id}?{QueryStringHelper.ToQueryString(query)}");
+
+            return await response.ReadContentAsync<int>();
         }
     }
 }

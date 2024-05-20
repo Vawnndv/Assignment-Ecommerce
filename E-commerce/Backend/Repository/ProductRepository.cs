@@ -4,6 +4,7 @@ using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared_ViewModels.Product;
 using Shared_ViewModels.Helpers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Backend.Repository
 {
@@ -251,6 +252,64 @@ namespace Backend.Repository
             await _context.SaveChangesAsync();
     
             return existingProduct;
+        }
+
+        public async Task<int> GetNumOfProductPagesByCategory(int id, QueryObject query)
+        {
+            // Find the category by categoryId
+            var category = _context.Categories
+                .Include(s => s.SubCategories)
+                .FirstOrDefault(c => c.Id == id);
+
+            if (category == null)
+            {
+                return 0;
+            }
+
+            var categoryIds = GetAllCategoryIds(category);
+
+            var products = _context.Products
+                .Where(p => categoryIds.Contains(p.CategoryId))
+                .Include(p => p.ProductTypes)
+                    .ThenInclude(pt => pt.ProductImages)
+                .Include(p => p.Ratings)
+                .AsQueryable();
+
+            // Query
+            if (query.IsLatest)
+            {
+                products = products.OrderByDescending(p => p.CreatedDate).Take(query.PageLimit);
+            }
+
+            if (query.IsDiscount)
+            {
+                products = products.OrderByDescending(p => p.Discount).Take(query.PageLimit);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                products = products.Where(s => s.Name.Contains(query.Search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(s => s.Name) : products.OrderBy(s => s.Name);
+                }
+
+                else if (query.SortBy.Equals("CreatedDate", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(s => s.CreatedDate) : products.OrderBy(s => s.CreatedDate);
+                }
+            }
+            // Get total number of products
+            var totalProducts = await products.CountAsync();
+
+            // Calculate the number of pages
+            int totalPages = (int)Math.Ceiling((double)totalProducts / query.PageSize);
+
+            return totalPages;
         }
     }
 }

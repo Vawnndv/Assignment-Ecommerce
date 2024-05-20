@@ -1,5 +1,5 @@
 ﻿@using Shared_ViewModels.Product
-@model IList<ProductVmDto>
+@model Tuple<IList<ProductVmDto>, int>
 
 @{
     ViewData["Title"] = "Category";
@@ -12,7 +12,7 @@
 
         <div class="container my-3">
             <div class="row">
-                @foreach (var product in Model)
+                @foreach (var product in Model.Item1)
                 {
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         @await Component.InvokeAsync("ProductCard", product)
@@ -21,17 +21,28 @@
             </div>
 
             <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
-                    <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
-                    <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
+                <ul class="pagination justify-content-center custom-pagination">
+                    <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.Item2; i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link" href="?page=@i">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(ViewBag.CurrentPage == Model.Item2 ? "disabled" : "")">
+                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
                         </a>
                     </li>
                 </ul>
             </nav>
+
 
         </div>
     </ul>

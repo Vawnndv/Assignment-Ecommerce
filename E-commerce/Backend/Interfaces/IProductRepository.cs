@@ -13,5 +13,6 @@ namespace Backend.Interfaces
         Task<Product?> UpdateAsync(int id, UpdateProductVmDto productDto);
         Task<Product?> DeleteAsync(int id);
         Task<bool> ProductExists(int id);
+        Task<int> GetNumOfProductPagesByCategory(int id, QueryObject query);
     }
 }

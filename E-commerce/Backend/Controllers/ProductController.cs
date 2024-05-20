@@ -65,6 +65,18 @@ namespace Backend.Controllers
             return Ok(productsDto);
         }
 
+        // GET: api/product/category/numberpages{category}
+        [HttpGet("category/numberpages/{id:int}")]
+        public async Task<ActionResult> GetNumOfProductPagesByCategory([FromRoute] int id, [FromQuery] QueryObject query)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var num = await _productRepo.GetNumOfProductPagesByCategory(id, query);
+
+            return Ok(num);
+        }
+
         // POST: api/product
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductRequestVmDto productDto)

@@ -10,7 +10,7 @@ namespace Shared_ViewModels.Helpers
         public String? SortBy { get; set; } = null;
         public bool IsDecsending { get; set; } = false;
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 20;
+        public int PageSize { get; set; } = 6;
         public int PageLimit { get; set; } = 5; // This size for limit products (Lastest/ Discount) show on HomePage
     }
 
