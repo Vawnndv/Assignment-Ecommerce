@@ -75,3 +75,35 @@ footer address, footer p {
     color: white;
     border-color: white;
 }
+
+/* CSS for slider filter price at show products */
+/* Custom styling for noUiSlider */
+.noUi-target, .noUi-horizontal {
+    height: 1px;
+}
+
+#priceRangeSlider {
+    height: 7px !important
+}
+
+.noUi-connects {
+    background-color: gre
+}
+
+.noUi-handle:after, .noUi-handle:before {
+    display: none !important;
+}
+
+.noUi-horizontal .noUi-handle {
+    background: black;
+    border-radius: 100%;
+    width: 10px !important;
+    height: 10px !important;
+    top: -3px !important;
+    right: -7px !important;
+    box-shadow: none;
+}
+
+.noUi-horizontal .noUi-handle .noUi-tooltip {
+    display: none;
+}

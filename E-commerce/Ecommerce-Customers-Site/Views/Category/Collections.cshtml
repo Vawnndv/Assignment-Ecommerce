@@ -5,45 +5,91 @@
     ViewData["Title"] = "Category";
 }
 
-<div class="text-center">
-    <ul>
-        @if (Model == null)
-            return;
+<div class="container my-3">
+    <div class="row">
+        <!-- Filter Products -->
+        <div class="col-lg-2">
+            <form method="get">
+                <div class="mb-3">
+                    <h4>FILTER</h4>
+                </div>
+                <div class="mb-3">
+                    <label for="sortBy" class="form-label fw-bold">SORT BY</label>
+                    <select class="form-select" id="sortBy" name="SortBy">
+                        <option value=Name>Name</option>
+                        <option value=Price>Price</option>
+                        <option value=CreatedDate selected>Lasted</option>
+                    </select>
+                </div>
 
-        <div class="container my-3">
-            <div class="row">
-                @foreach (var product in Model.Item1)
-                {
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        @await Component.InvokeAsync("ProductCard", product)
-                    </div>
-                }
-            </div>
+                <div class="mb-3 form-check">
+                    <label class="form-check-label fw-bold" for="isDescending">DESCENDING</label>
+                    <input type="checkbox" class="form-check-input" id="isDescending" name="IsDescending">
+                </div>
 
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center custom-pagination">
-                    <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                    </li>
-                    @for (int i = 1; i <= Model.Item2; i++)
-                    {
-                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                            <a class="page-link" href="?page=@i">@i</a>
-                        </li>
-                    }
-                    <li class="page-item @(ViewBag.CurrentPage == Model.Item2 ? "disabled" : "")">
-                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                <div class="mb-3">
+                    <label for="priceRange" class="form-label fw-bold">PRICE RANGE</label>
+                    <div id="priceRangeSlider"></div>
+                    <input type="hidden" id="minPrice" name="MinPrice" value="0">
+                    <input type="hidden" id="maxPrice" name="MaxPrice" value="2147483647">
+                    <span id="minPriceValue" class="fst-italic">$0</span> - <span id="maxPriceValue" class="fst-italic">$2,147,483,647</span>
+                </div>
 
-
+                <button type="submit" class="btn btn-outline-dark">Apply</button>
+            </form>
         </div>
-    </ul>
+
+        <!-- Show Products -->
+        <div class="col-lg-10">
+            <div class="text-center">
+                <ul>
+                    @if (Model == null)
+                        return;
+
+                    <div class="container">
+                        <div class="row">
+                            @if (Model.Item1.Count == 0)
+                            {
+                                <div class="container d-flex align-items-center justify-content-center my-3">
+                                    <img src="~/assets/images/empty.png" style="width: 15%;" alt="img">
+                                </div>
+                            } else
+                            {
+                                @foreach (var product in Model.Item1)
+                                {
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        @await Component.InvokeAsync("ProductCard", product)
+                                    </div>
+                                }
+                                
+                            }
+                        </div>
+
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center custom-pagination">
+                                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                                    <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)&SortBy=@(ViewBag.Sortby)&IsDescending=@(ViewBag.IsDescending)&MinPrice=@(ViewBag.MinPrice)&MaxPrice=@(ViewBag.MaxPrice)" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= Model.Item2; i++)
+                                {
+                                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="?page=@i&SortBy=@(ViewBag.Sortby)&IsDescending=@(ViewBag.IsDescending)&MinPrice=@(ViewBag.MinPrice)&MaxPrice=@(ViewBag.MaxPrice)">@i</a>
+                                    </li>
+                                }
+                                <li class="page-item @(ViewBag.CurrentPage == Model.Item2 ? "disabled" : "")">
+                                    <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)&SortBy=@(ViewBag.Sortby)&IsDescending=@(ViewBag.IsDescending)&MinPrice=@(ViewBag.MinPrice)&MaxPrice=@(ViewBag.MaxPrice)" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

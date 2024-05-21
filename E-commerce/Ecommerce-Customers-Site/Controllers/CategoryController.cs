@@ -25,15 +25,19 @@ namespace Ecommerce_Customers_Site.Controllers
         }
 
         // GET: /Category/Collections/{?id}
-        public async Task<IActionResult> Collections(int? id, int? page)
+        public async Task<IActionResult> Collections(int? id, int? page, string? sortBy, string? isDescending, int minPrice = int.MinValue, int maxPrice = int.MaxValue)
         {
             if (id.HasValue)
             {
                 var query = new QueryObject
                 {
                     PageNumber = page ?? 1, // Assign 1 when page == null
-                    IsDecsending = true
+                    SortBy = sortBy,
+                    IsDecsending = isDescending == "on" ? true : false,
+                    MinPrice = minPrice,
+                    MaxPrice = maxPrice
                 };
+
                 var totalPages = await _productService.GetNumOfProductPagesByCategory(id.Value, query);
 
                 var products = await _productService.GetByCategoryId(id.Value, query);
@@ -42,6 +46,10 @@ namespace Ecommerce_Customers_Site.Controllers
 
                 ViewBag.CurrentPage = page ?? 1;
                 ViewBag.CategoryId = id.Value;
+                ViewBag.Sortby = sortBy;
+                ViewBag.IsDescending = isDescending;
+                ViewBag.MinPrice = minPrice;
+                ViewBag.MaxPrice = maxPrice;
 
                 return View(tuple);
             }

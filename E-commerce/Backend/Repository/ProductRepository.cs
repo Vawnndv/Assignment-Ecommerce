@@ -17,6 +17,44 @@ namespace Backend.Repository
             _context = context;
         }
 
+        private IQueryable<Product> filterProduct(IQueryable<Product> products, QueryObject query)
+        {
+            if (query.IsLatest)
+            {
+                products = products.OrderByDescending(p => p.CreatedDate).Take(query.PageLimit);
+            }
+
+            if (query.IsDiscount)
+            {
+                products = products.OrderByDescending(p => p.Discount).Take(query.PageLimit);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                products = products.Where(s => s.Name.Contains(query.Search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(s => s.Name) : products.OrderBy(s => s.Name);
+                }
+
+                else if (query.SortBy.Equals("CreatedDate", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(s => s.CreatedDate) : products.OrderBy(s => s.CreatedDate);
+                }
+
+                else if (query.SortBy.Equals("Price", StringComparison.OrdinalIgnoreCase))
+                {
+                    products = query.IsDecsending ? products.OrderByDescending(s => s.Price * ((100 - s.Discount) / 100)) : products.OrderBy(s => s.Price * ((100 - s.Discount) / 100));
+                }
+            }
+
+            return products;
+        }
+
         public async Task<Product> CreateAsync(Product productModel)
         {
             await _context.Products.AddAsync(productModel);
@@ -44,39 +82,14 @@ namespace Backend.Repository
                 .Include(p => p.ProductTypes)
                     .ThenInclude(pt => pt.ProductImages)
                 .Include(p => p.Ratings)
+                .Where(s => s.Price <= query.MaxPrice & s.Price >= query.MinPrice)
                 .AsQueryable();
 
-            if (query.IsLatest)
-            {
-                products = products.OrderByDescending(p => p.CreatedDate).Take(query.PageLimit);
-            }
-
-            if (query.IsDiscount)
-            {
-                products = products.OrderByDescending(p => p.Discount).Take(query.PageLimit);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.Search))
-            {
-                products = products.Where(s => s.Name.Contains(query.Search));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.Name) : products.OrderBy(s => s.Name);
-                }
-
-                else if (query.SortBy.Equals("CreatedDate", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.CreatedDate) : products.OrderBy(s => s.CreatedDate);
-                }
-            }
+            var newProducts = filterProduct(products, query);
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
-            return await products.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+            return await newProducts.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         private List<int> GetAllCategoryIds(Category category)
@@ -113,40 +126,14 @@ namespace Backend.Repository
                 .Include(p => p.ProductTypes)
                     .ThenInclude(pt => pt.ProductImages)
                 .Include(p => p.Ratings)
+                .Where(s => s.Price <= query.MaxPrice & s.Price >= query.MinPrice)
                 .AsQueryable();
 
-            // Query
-            if (query.IsLatest)
-            {
-                products = products.OrderByDescending(p => p.CreatedDate).Take(query.PageLimit);
-            }
-
-            if (query.IsDiscount)
-            {
-                products = products.OrderByDescending(p => p.Discount).Take(query.PageLimit);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.Search))
-            {
-                products = products.Where(s => s.Name.Contains(query.Search));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.Name) : products.OrderBy(s => s.Name);
-                }
-
-                else if (query.SortBy.Equals("CreatedDate", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.CreatedDate) : products.OrderBy(s => s.CreatedDate);
-                }
-            }
+            var newProducts = filterProduct(products, query);
 
             var skipNumber = (query.PageNumber - 1) * query.PageSize;
 
-            return await products.Skip(skipNumber).Take(query.PageSize).ToListAsync();
+            return await newProducts.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
         public async Task<Product?> GetByIdAsync(int id)
@@ -273,38 +260,13 @@ namespace Backend.Repository
                 .Include(p => p.ProductTypes)
                     .ThenInclude(pt => pt.ProductImages)
                 .Include(p => p.Ratings)
+                .Where(s => s.Price <= query.MaxPrice & s.Price >= query.MinPrice)
                 .AsQueryable();
 
-            // Query
-            if (query.IsLatest)
-            {
-                products = products.OrderByDescending(p => p.CreatedDate).Take(query.PageLimit);
-            }
+            var newProducts = filterProduct(products, query);
 
-            if (query.IsDiscount)
-            {
-                products = products.OrderByDescending(p => p.Discount).Take(query.PageLimit);
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.Search))
-            {
-                products = products.Where(s => s.Name.Contains(query.Search));
-            }
-
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                if (query.SortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.Name) : products.OrderBy(s => s.Name);
-                }
-
-                else if (query.SortBy.Equals("CreatedDate", StringComparison.OrdinalIgnoreCase))
-                {
-                    products = query.IsDecsending ? products.OrderByDescending(s => s.CreatedDate) : products.OrderBy(s => s.CreatedDate);
-                }
-            }
             // Get total number of products
-            var totalProducts = await products.CountAsync();
+            var totalProducts = await newProducts.CountAsync();
 
             // Calculate the number of pages
             int totalPages = (int)Math.Ceiling((double)totalProducts / query.PageSize);

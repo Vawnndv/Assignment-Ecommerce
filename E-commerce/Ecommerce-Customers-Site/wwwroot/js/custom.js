@@ -75,3 +75,46 @@ function updateQuantity(change) {
     }
     quantityInput.value = newQuantity;
 }
+
+// Handle slider price at filter products
+document.addEventListener("DOMContentLoaded", function () {
+    var urlParams = new URLSearchParams(window.location.search);
+    var sortBy = urlParams.get('SortBy');
+    var isDescending = urlParams.get('IsDescending') === 'on';
+    var minPrice = parseInt(urlParams.get('MinPrice') || 0, 10);
+    var maxPrice = parseInt(urlParams.get('MaxPrice') || 2147483647, 10);
+
+    if (sortBy) {
+        document.getElementById('sortBy').value = sortBy;
+    }
+    document.getElementById('isDescending').checked = isDescending;
+
+    document.getElementById('minPrice').value = minPrice;
+    document.getElementById('maxPrice').value = maxPrice;
+
+    var priceRangeSlider = document.getElementById('priceRangeSlider');
+    noUiSlider.create(priceRangeSlider, {
+        start: [minPrice, maxPrice],
+        connect: true,
+        range: {
+            'min': 0,
+            'max': 1000000000
+        },
+        format: wNumb({
+            decimals: 0
+        }),
+        tooltips: true
+    });
+
+    priceRangeSlider.noUiSlider.on('update', function (values, handle) {
+        var minPriceValue = parseInt(values[0].replace('$', '').replace(',', ''), 10);
+        var maxPriceValue = parseInt(values[1].replace('$', '').replace(',', ''), 10);
+
+        document.getElementById('minPriceValue').innerText = '$' + minPriceValue.toLocaleString();
+        document.getElementById('maxPriceValue').innerText = '$' + maxPriceValue.toLocaleString();
+
+        document.getElementById('minPrice').value = minPriceValue;
+        document.getElementById('maxPrice').value = maxPriceValue;
+    });
+});
+

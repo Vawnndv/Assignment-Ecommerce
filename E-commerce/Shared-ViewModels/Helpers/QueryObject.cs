@@ -12,6 +12,8 @@ namespace Shared_ViewModels.Helpers
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 6;
         public int PageLimit { get; set; } = 5; // This size for limit products (Lastest/ Discount) show on HomePage
+        public int MaxPrice { get; set; } = int.MaxValue;
+        public int MinPrice { get; set; } = int.MinValue;
     }
 
     public static class QueryStringHelper
