@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\assets\images\Logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Shared-ViewModels\Shared-ViewModels.csproj" />
   </ItemGroup>
 

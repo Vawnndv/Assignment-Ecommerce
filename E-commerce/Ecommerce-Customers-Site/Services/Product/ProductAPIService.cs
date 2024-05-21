@@ -35,5 +35,12 @@ namespace Ecommerce_Customers_Site.Services.Product
 
             return await response.ReadContentAsync<int>();
         }
+
+        public async Task<ProductVmDto> GetById(int id)
+        {
+            var response = await _client.GetAsync($"{BasePath}/{id}");
+
+            return await response.ReadContentAsync<ProductVmDto>();
+        }
     }
 }

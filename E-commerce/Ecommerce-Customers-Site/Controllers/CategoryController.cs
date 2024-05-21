@@ -32,6 +32,7 @@ namespace Ecommerce_Customers_Site.Controllers
                 var query = new QueryObject
                 {
                     PageNumber = page ?? 1, // Assign 1 when page == null
+                    IsDecsending = true
                 };
                 var totalPages = await _productService.GetNumOfProductPagesByCategory(id.Value, query);
 
@@ -39,7 +40,7 @@ namespace Ecommerce_Customers_Site.Controllers
 
                 var tuple = new Tuple<IList<ProductVmDto>, int>(products, totalPages);
 
-                ViewBag.CurrentPage = page;
+                ViewBag.CurrentPage = page ?? 1;
                 ViewBag.CategoryId = id.Value;
 
                 return View(tuple);
