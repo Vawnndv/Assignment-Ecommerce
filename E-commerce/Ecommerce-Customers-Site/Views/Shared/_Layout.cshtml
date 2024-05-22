@@ -16,30 +16,9 @@
 
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            @* <a class="navbar-brand" asp-area="" asp-controller="Category" asp-action="Index">Category App</a> *@
-            <div class="container-fluid">
-                @* <div class="container"> *@
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <img src="~/assets/images/logo.png" alt="Logo" height="60">
-                    </a>
-                @* </div> *@
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse">
-                    @await Component.InvokeAsync("Categories")
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-dark" type="submit">Search</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
-    @if (ViewBag.IsHome != null && (bool)ViewBag.IsHome)
+    @Html.Partial("_Header")
+
+    @if (ViewBag.IsHomeOrAuthPage != null && (bool)ViewBag.IsHomeOrAuthPage)
     {
         <div class="container-fluid px-0">
             <main role="main">
@@ -56,54 +35,8 @@
         </div>
     }
 
-    <footer class="bg-dark text-white py-5 border-top text-muted"> @* Removed "footer" *@
-@*         <div class="container">
-            &copy; 2024 - Ecommerce_Customers_Site - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div> *@
-        <div class="container">
-             <div class="row">
-                <div class="col-md-3">
-                    <h5>Hotline</h5>
-                    <p>1-800-123-4567</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Brand</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Customer Support</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Shipping & Returns</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Our Location</h5>
-                    <address>
-                        123 Ap Bac St<br>
-                        Ho Chi Minh City<br>
-                        VietNam
-                    </address>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col">
-                    <h5>Follow Us</h5>
-                    <ul class="list-inline">
-                        <li class="list-inline-item"><a href="#"><i class="bi bi-facebook fs-3"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="bi bi-twitter fs-3"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="bi bi-instagram fs-3"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="bi bi-linkedin fs-3"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
+    @Html.Partial("_Footer")
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

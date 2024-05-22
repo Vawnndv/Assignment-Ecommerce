@@ -145,7 +145,7 @@ footer address, footer p {
     transform: rotate(180deg);
 }
 
-.nav-pills .nav-link.active {
+#navAuth .nav-pills .nav-link.active {
     background-color: lightgray !important;
     border-bottom: none;
     -webkit-appearance: none !important;

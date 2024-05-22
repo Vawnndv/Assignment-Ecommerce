@@ -1,9 +1,9 @@
-﻿using Backend.Dtos.Account;
-using Backend.Interfaces;
+﻿using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared_ViewModels.Account;
 
 namespace Backend.Controllers
 {
@@ -23,7 +23,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login(LoginVmDto loginDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -37,7 +37,7 @@ namespace Backend.Controllers
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
             return Ok(
-                new NewUserDto
+                new NewUserVmDto
                 {
                     UserName = user.UserName,
                     Email = user.Email,
@@ -47,7 +47,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromBody] RegisterVmDto registerDto)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Backend.Controllers
                     if (roleResult.Succeeded)
                     {
                         return Ok(
-                            new NewUserDto
+                            new NewUserVmDto
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,

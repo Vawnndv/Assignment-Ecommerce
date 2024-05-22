@@ -1,0 +1,43 @@
+﻿@using Shared_ViewModels.Account
+
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/assets/images/logo.png" alt="Logo" height="60">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                @await Component.InvokeAsync("Categories")
+                <div class="d-flex align-items-center ms-auto mx-2">
+                    <a href="#" class="position-relative me-3">
+                        <i class="bi text-dark bi-cart fs-4"></i>
+                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">4</span>
+                    </a>
+                </div>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-dark" type="submit">Search</button>
+                </form>
+
+                @if (Context.Request.Cookies["token"] == null)
+                {
+                    <div>
+                        <a class="btn btn-dark mx-2" asp-controller="Login" asp-action="Index">Login</a>
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-dark mx-2">Logout</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </nav>
+</header>

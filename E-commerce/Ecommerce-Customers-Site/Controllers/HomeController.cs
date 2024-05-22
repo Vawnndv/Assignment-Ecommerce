@@ -16,7 +16,7 @@ namespace Ecommerce_Customers_Site.Controllers
         public IActionResult Index()
         {
             // To check to show UI of Home
-            ViewBag.IsHome = true;
+            ViewBag.IsHomeOrAuthPage = true;
 
             return View();
         }

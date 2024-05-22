@@ -135,11 +135,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Hanlde Show model register/ Login
-$(document).ready(function () {
-    // Attach click event to the user icon
-    $("#userIcon").click(function () {
-        // Show the user modal
-        $("#userModal").modal("show");
-    });
-});
