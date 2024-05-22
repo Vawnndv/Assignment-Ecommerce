@@ -76,6 +76,23 @@ function updateQuantity(change) {
     quantityInput.value = newQuantity;
 }
 
+// Handle show filter in show products
+$(document).ready(function () {
+    $("#toggleFilter").click(function () {
+        $("#filterContainer").toggleClass("show");
+        $(this).find('.icon').toggleClass('rotate');
+    });
+});
+
+$(document).click(function (event) {
+    if (!$(event.target).closest("#filterContainer, #toggleFilter").length) {
+        if ($("#filterContainer").hasClass("show")) {
+            $("#filterContainer").removeClass("show");
+            $("#toggleFilter").find('.icon').removeClass('rotate');
+        }
+    }
+});
+
 // Handle slider price at filter products
 document.addEventListener("DOMContentLoaded", function () {
     var urlParams = new URLSearchParams(window.location.search);
@@ -118,3 +135,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Hanlde Show model register/ Login
+$(document).ready(function () {
+    // Attach click event to the user icon
+    $("#userIcon").click(function () {
+        // Show the user modal
+        $("#userModal").modal("show");
+    });
+});

@@ -19,7 +19,7 @@
             <span class="text-decoration-line-through text-dark">@Model.Price.ToString("C")</span>
             <span class="text-danger fw-bold ms-2">@((Model.Price * (100 - Model.Discount) / 100).ToString("C"))</span>
         </p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-auto">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-auto">
             <a class="btn btn-outline-dark btn-md" asp-controller="Product" asp-action="Detail" asp-route-id="@Model.Id">SEE DETAIL</a>
             <button class="btn btn-md btn-dark" type="button">ADD TO CART</button>
         </div>

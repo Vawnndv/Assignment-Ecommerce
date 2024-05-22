@@ -1,14 +1,17 @@
 using Ecommerce_Customers_Site.Services.Category;
 using Ecommerce_Customers_Site.Services.Product;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var baseUri = new Uri(builder.Configuration["ApiSettings:BaseUri"]);
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<ICategoryAPIService, CategoryAPIService>(c =>
-c.BaseAddress = new Uri("https://localhost:7260/"));
+c.BaseAddress = baseUri);
 builder.Services.AddHttpClient<IProductAPIService, ProductAPIService>(c =>
-c.BaseAddress = new Uri("https://localhost:7260/"));
+c.BaseAddress = baseUri);
 
 var app = builder.Build();
 

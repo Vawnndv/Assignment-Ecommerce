@@ -107,3 +107,46 @@ footer address, footer p {
 .noUi-horizontal .noUi-handle .noUi-tooltip {
     display: none;
 }
+
+/* CSS Show filter products */
+.filter-container {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: white;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    z-index: 1001;
+}
+
+.filter-container.show {
+    left: 0;
+}
+
+.toggle-filter-btn {
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 100;
+    background-color: white;
+    border-width: 0;
+}
+
+.toggle-filter-btn .icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.filter-container.show .toggle-filter-btn .icon {
+    transform: rotate(180deg);
+}
+
+.nav-pills .nav-link.active {
+    background-color: lightgray !important;
+    border-bottom: none;
+    -webkit-appearance: none !important;
+}

@@ -6,41 +6,10 @@
 }
 
 <div class="container my-3">
+
     <div class="row">
-        <!-- Filter Products -->
-        <div class="col-lg-2">
-            <form method="get">
-                <div class="mb-3">
-                    <h4>FILTER</h4>
-                </div>
-                <div class="mb-3">
-                    <label for="sortBy" class="form-label fw-bold">SORT BY</label>
-                    <select class="form-select" id="sortBy" name="SortBy">
-                        <option value=Name>Name</option>
-                        <option value=Price>Price</option>
-                        <option value=CreatedDate selected>Lasted</option>
-                    </select>
-                </div>
-
-                <div class="mb-3 form-check">
-                    <label class="form-check-label fw-bold" for="isDescending">DESCENDING</label>
-                    <input type="checkbox" class="form-check-input" id="isDescending" name="IsDescending">
-                </div>
-
-                <div class="mb-3">
-                    <label for="priceRange" class="form-label fw-bold">PRICE RANGE</label>
-                    <div id="priceRangeSlider"></div>
-                    <input type="hidden" id="minPrice" name="MinPrice" value="0">
-                    <input type="hidden" id="maxPrice" name="MaxPrice" value="2147483647">
-                    <span id="minPriceValue" class="fst-italic">$0</span> - <span id="maxPriceValue" class="fst-italic">$2,147,483,647</span>
-                </div>
-
-                <button type="submit" class="btn btn-outline-dark">Apply</button>
-            </form>
-        </div>
-
         <!-- Show Products -->
-        <div class="col-lg-10">
+        <div class="col-lg-12">
             <div class="text-center">
                 <ul>
                     @if (Model == null)
@@ -90,6 +59,43 @@
                     </div>
                 </ul>
             </div>
+        </div>
+
+        <!-- Filter Products -->
+        <div class="filter-container" id="filterContainer">
+            <div class="p-3">
+                <form method="get">
+                    <div class="mb-3">
+                        <h4>FILTER</h4>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sortBy" class="form-label fw-bold">SORT BY</label>
+                        <select class="form-select" id="sortBy" name="SortBy">
+                            <option value="Name">Name</option>
+                            <option value="Price">Price</option>
+                            <option value="CreatedDate" selected>Lasted</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <label class="form-check-label fw-bold" for="isDescending">DESCENDING</label>
+                        <input type="checkbox" class="form-check-input" id="isDescending" name="IsDescending">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="priceRange" class="form-label fw-bold">PRICE RANGE</label>
+                        <div id="priceRangeSlider"></div>
+                        <input type="hidden" id="minPrice" name="MinPrice" value="0">
+                        <input type="hidden" id="maxPrice" name="MaxPrice" value="2147483647">
+                        <span id="minPriceValue" class="fst-italic">$0</span> - <span id="maxPriceValue" class="fst-italic">$2,147,483,647</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-dark">Apply</button>
+                </form>
+            </div>
+            <button class="btn btn-light toggle-filter-btn" id="toggleFilter" style="border-top-right-radius: 2rem; border-bottom-right-radius: 2rem;">
+                <i class="bi bi-chevron-compact-right fs-4"></i>
+            </button>
         </div>
     </div>
 </div>
