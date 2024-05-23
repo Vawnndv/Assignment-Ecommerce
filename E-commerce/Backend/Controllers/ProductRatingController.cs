@@ -2,6 +2,7 @@
 using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared_ViewModels.Product;
@@ -54,6 +55,7 @@ namespace Backend.Controllers
 
         // POST: api/productrating
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Create([FromBody] CreateProductRatingRequestVmDto productRatingDto)
         {
             if (!ModelState.IsValid)
@@ -70,6 +72,7 @@ namespace Backend.Controllers
 
         // PUT: api/productrating/{id}
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateProductRatingVmDto updateDto)
         {
             if (!ModelState.IsValid)

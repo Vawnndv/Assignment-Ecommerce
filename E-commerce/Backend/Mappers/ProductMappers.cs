@@ -40,7 +40,8 @@ namespace Backend.Mappers
                 CreatedDate = productModel.CreatedDate,
                 UpdatedDate = productModel.UpdatedDate,
                 CategoryId = productModel.CategoryId,
-                ProductTypes = productModel.ProductTypes.Select(s => s.ToProductTypeDto()).ToList()
+                ProductTypes = productModel.ProductTypes.Select(s => s.ToProductTypeDto()).ToList(),
+                Ratings = productModel.Ratings.Select(r => r.ToProductRatingDto()).ToList()
             };
         }
 

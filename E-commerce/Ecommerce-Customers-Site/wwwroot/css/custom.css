@@ -150,3 +150,37 @@ footer address, footer p {
     border-bottom: none;
     -webkit-appearance: none !important;
 }
+
+/* CSS Review Rating product */
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star-rating input:checked ~ label {
+    color: #f5c518;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #f5c518;
+}
+
+.accordion-button:not(.collapsed) {
+    color: black;
+    background-color: lightgrey;
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url('../assets/images/downIcon.svg') !important;
+}

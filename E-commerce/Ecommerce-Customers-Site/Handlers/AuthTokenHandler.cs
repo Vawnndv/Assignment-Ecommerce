@@ -23,7 +23,7 @@
             {
                 // Token expired or invalid, delete token from cookie and navigate to Home page
                 _httpContextAccessor.HttpContext.Response.Cookies.Delete("token");
-                _httpContextAccessor.HttpContext.Response.Redirect("/Home/Index");
+                _httpContextAccessor.HttpContext.Response.Redirect("/Login");
             }
 
             return response;

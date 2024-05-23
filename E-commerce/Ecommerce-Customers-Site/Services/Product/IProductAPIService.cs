@@ -9,5 +9,6 @@ namespace Ecommerce_Customers_Site.Services.Product
         Task<IList<ProductVmDto>> GetAll(QueryObject query);
         Task<int> GetNumOfProductPagesByCategory(int id, QueryObject query);
         Task<ProductVmDto> GetById(int id);
+        Task<ProductRatingVmDto> Review(CreateProductRatingRequestVmDto review);
     }
 }

@@ -6,7 +6,7 @@
     <div class="row flex-nowrap overflow-hidden product-container">
         @foreach (var product in Model)
         {
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-inline-block">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-inline-block text-center">
                 @await Component.InvokeAsync("ProductCard", product)
             </div>
         }

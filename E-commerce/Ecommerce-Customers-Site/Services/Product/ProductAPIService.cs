@@ -1,4 +1,5 @@
 ﻿using Ecommerce_Customers_Site.Helpers;
+using Shared_ViewModels.Account;
 using Shared_ViewModels.Category;
 using Shared_ViewModels.Helpers;
 using Shared_ViewModels.Product;
@@ -9,6 +10,7 @@ namespace Ecommerce_Customers_Site.Services.Product
     {
         private readonly HttpClient _client;
         public const string BasePath = "/api/product";
+        public const string BasePathRating = "/api/productrating";
 
         public ProductAPIService(HttpClient client)
         {
@@ -41,6 +43,13 @@ namespace Ecommerce_Customers_Site.Services.Product
             var response = await _client.GetAsync($"{BasePath}/{id}");
 
             return await response.ReadContentAsync<ProductVmDto>();
+        }
+
+        public async Task<ProductRatingVmDto> Review(CreateProductRatingRequestVmDto review)
+        {
+            var response = await _client.PostAsJsonAsync(BasePathRating, review);
+
+            return await response.ReadContentAsync<ProductRatingVmDto>();
         }
     }
 }

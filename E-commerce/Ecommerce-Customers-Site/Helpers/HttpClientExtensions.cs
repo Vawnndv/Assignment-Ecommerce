@@ -8,10 +8,10 @@ namespace Ecommerce_Customers_Site.Helpers
     {
         public static async Task<T> ReadContentAsync<T>(this HttpResponseMessage response)
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException("Token has expired");
-            }
+            //if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            //{
+            //    throw new UnauthorizedAccessException("Token has expired");
+            //}
 
             if (response.IsSuccessStatusCode == false)
             {

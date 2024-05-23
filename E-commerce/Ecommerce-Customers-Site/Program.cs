@@ -16,11 +16,11 @@ var baseUri = new Uri(builder.Configuration["ApiSettings:BaseUri"]);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<ICategoryAPIService, CategoryAPIService>(c =>
-c.BaseAddress = baseUri);
+c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
 builder.Services.AddHttpClient<IProductAPIService, ProductAPIService>(c =>
-c.BaseAddress = baseUri);
+c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
 builder.Services.AddHttpClient<IAccountAPIService, AccountAPIService>(c =>
-c.BaseAddress = baseUri);
+c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
 
 var app = builder.Build();
 

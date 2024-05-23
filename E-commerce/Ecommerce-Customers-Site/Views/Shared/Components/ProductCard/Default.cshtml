@@ -1,4 +1,6 @@
 ﻿@using Shared_ViewModels.Product
+@using Shared_ViewModels.Helpers
+
 @model ProductVmDto
 
 <div class="card h-100">
@@ -7,11 +9,16 @@
         <h5 class="card-title">@Model.Name</h5>
 
         <div class="my-2">
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9733;</span>
-            <span class="star">&#9734;</span>
+            @for (var i = 1; i <= 5; i++)
+            {
+                if (i <= @RatingHelper.CalculateAverageRating(Model.Ratings))
+                {
+                    <span class="star">&#9733;</span>
+                } else
+                {
+                    <span class="star">&#9734;</span>
+                }
+            }
         </div>
 
         <p class="card-text">@Model.Description</p>
