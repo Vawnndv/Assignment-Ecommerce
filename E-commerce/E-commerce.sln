@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared-ViewModels", "Shared-ViewModels\Shared-ViewModels.csproj", "{146A5638-B448-487E-B707-95BC2B959A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommerce-Customers-Site", "Ecommerce-Customers-Site\Ecommerce-Customers-Site.csproj", "{846D7F16-BF18-4E99-9BD1-9549BB485751}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommerce-Customers-Site", "Ecommerce-Customers-Site\Ecommerce-Customers-Site.csproj", "{846D7F16-BF18-4E99-9BD1-9549BB485751}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
