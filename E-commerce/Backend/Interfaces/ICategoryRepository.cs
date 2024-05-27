@@ -11,5 +11,6 @@ namespace Backend.Interfaces
         Task<Category?> UpdateAsync(int id, UpdateCategoryVmDto categoryDto);
         Task<Category?> DeleteAsync(int id);
         Task<bool> CategoryExists(int id);
+        Task<List<Category>> GetParentCategoriesAsync(int categoryId);
     }
 }

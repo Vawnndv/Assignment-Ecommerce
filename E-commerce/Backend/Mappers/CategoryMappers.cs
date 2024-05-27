@@ -26,5 +26,21 @@ namespace Backend.Mappers
                 ParentCategoryId = categoryDto.ParentCategoryId
             };
         }
+
+        public static List<CategoryVmDto> ToListCategoryDto(this List<Category> categoryModel)
+        {
+            if (categoryModel == null)
+            {
+                return new List<CategoryVmDto>();
+            }
+
+            return categoryModel.Select(category => new CategoryVmDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ParentCategoryId = category.ParentCategoryId,
+            }).ToList();
+        }
     }
 }

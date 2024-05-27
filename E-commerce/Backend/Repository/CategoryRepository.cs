@@ -65,5 +65,27 @@ namespace Backend.Repository
 
             return existingCategory;
         }
+
+        public async Task<List<Category>> GetParentCategoriesAsync(int categoryId)
+        {
+            var category = await _context.Categories.FindAsync(categoryId);
+            var parentCategories = new List<Category>();
+            
+            if (category != null)
+            {
+                parentCategories.Add(category);
+            }
+
+            while (category?.ParentCategoryId != null)
+            {
+                category = await _context.Categories.FindAsync(category.ParentCategoryId);
+                if (category != null)
+                {
+                    parentCategories.Insert(0, category);
+                }
+            }
+
+            return parentCategories;
+        }
     }
 }

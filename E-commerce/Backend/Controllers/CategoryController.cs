@@ -98,5 +98,18 @@ namespace Backend.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("{categoryId}/parent-categories")]
+        public async Task<IActionResult> GetParentCategories(int categoryId)
+        {
+            var parentCategories = await _categoryRepo.GetParentCategoriesAsync(categoryId);
+
+            if (parentCategories == null || parentCategories.Count == 0)
+            {
+                return NotFound("No parent categories found for the given category ID.");
+            }
+
+            return Ok(parentCategories.ToListCategoryDto());
+        }
     }
 }
