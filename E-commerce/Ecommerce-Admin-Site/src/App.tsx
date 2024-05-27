@@ -16,6 +16,7 @@ export function App() {
       <Route path="/Login" element={<Login rememberMe={rememberMe} setRememberMe={setRememberMe} />} />
       <Route path='/' element={<Layout/>}>
         <Route path="/dashboard" element={<Home/>} />
+        <Route path="/categories/:id" element={<CategoryManagement />} />
         <Route path="/categories" element={<CategoryManagement />} />
         <Route path="/products" element={<ProductManagement/>} />
         <Route path="/users" element={<UserManagement/>} />
