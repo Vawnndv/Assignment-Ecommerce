@@ -25,7 +25,7 @@ const MainListItems: React.FC<NavigationListProps> = ({ toggleDrawer }) => {
 
   return (
     <React.Fragment>
-      <ListItemButton onClick={() => handleNavigation('/dashboard')}>
+      <ListItemButton onClick={() => handleNavigation('/')}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>

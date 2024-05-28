@@ -1,4 +1,3 @@
-import {  } from '../../Models/AuthModels';
 import Axios from '../APIs/Axios';
 
 const getAllCategoryService = async (): Promise<any> => {

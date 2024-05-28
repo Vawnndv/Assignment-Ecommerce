@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import ViewIcon from '@mui/icons-material/Visibility';
 import { Category } from '../../Models/CategoryModels';
 
 interface CategoryDetailsProps {
@@ -73,7 +73,7 @@ const CategoryDetails: React.FC<CategoryDetailsProps> = ({ category, onEditCateg
                   <TableCell>{subCategory.name}</TableCell>
                   <TableCell>{subCategory.description}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => onEditCategory(subCategory.id)} color="primary">
+                    <IconButton onClick={() => onEditCategory(subCategory.id)}>
                       <Tooltip title="Edit Subcategory">
                         <EditIcon />
                       </Tooltip>
@@ -83,9 +83,9 @@ const CategoryDetails: React.FC<CategoryDetailsProps> = ({ category, onEditCateg
                         <DeleteIcon />
                       </Tooltip>
                     </IconButton>
-                    <IconButton component={Link} to={`/categories/${subCategory.id}`} color="primary">
+                    <IconButton component={Link} to={`/categories/${subCategory.id}`}>
                       <Tooltip title="View Subcategory">
-                        <NavigateNextIcon />
+                        <ViewIcon />
                       </Tooltip>
                     </IconButton>
                   </TableCell>

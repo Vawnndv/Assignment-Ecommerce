@@ -7,6 +7,7 @@ import Layout from './components/layout/Layout';
 import CategoryManagement from './pages/category/CategoryManagement';
 import ProductManagement from './pages/product/ProductManagement';
 import UserManagement from './pages/user/UserManagement';
+import ProductDetails from './pages/product/ProductDetails';
 
 export function App() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -15,10 +16,11 @@ export function App() {
     <Routes> 
       <Route path="/Login" element={<Login rememberMe={rememberMe} setRememberMe={setRememberMe} />} />
       <Route path='/' element={<Layout/>}>
-        <Route path="/dashboard" element={<Home/>} />
+        <Route path="/" element={<Home/>} />
         <Route path="/categories/:id" element={<CategoryManagement />} />
         <Route path="/categories" element={<CategoryManagement />} />
         <Route path="/products" element={<ProductManagement/>} />
+        <Route path="/products/:id" element={<ProductDetails/>} />
         <Route path="/users" element={<UserManagement/>} />
       </Route>
     </Routes>
