@@ -1,22 +1,26 @@
+import { useEffect, useState } from 'react';
 import { Box, Button, CircularProgress, Container, Grid, Paper, Tooltip } from '@mui/material';
 import Title from '../../components/Title';
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { getAllProductService } from '../../redux/services/productServices';
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
+import { deleteProductByIdService, getAllProductService } from '../../redux/services/productServices';
 import { Product, ProductQuery } from '../../Models/ProductModel';
 import { IconButton } from '@mui/material';
 import ViewIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const query: ProductQuery = {
   PageSize: 1000,
 };
 
 function ProductManagement() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]); // State to store selected rows
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -35,19 +39,41 @@ function ProductManagement() {
   }, []);
 
   const handleAddProduct = () => {
-    // Implement add product functionality
+    navigate('/products/new');
   };
 
   const handleViewProduct = (id: number) => {
-    // Implement view product functionality
+    navigate(`/products/${id}/edit`);
   };
 
   const handleEditProduct = (id: number) => {
-    // Implement edit product functionality
+    navigate(`/products/${id}/edit`);
   };
 
-  const handleDeleteProduct = (id: number) => {
-    // Implement delete product functionality
+  const handleDeleteProduct = async (id: number) => {
+    try {
+      await deleteProductByIdService(id);
+      // Update the state to remove the deleted product
+      setProducts(products.filter(product => product.id !== id));
+      toast.success('Product deleted successfully');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast.error('Error deleting product');
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    try {
+      await Promise.all(selectedRows.map(id => deleteProductByIdService(parseInt(id.toString()))));
+
+      // Update the state to remove the deleted products
+      setProducts(products.filter(product => !selectedRows.includes(product.id.toString())));
+      setSelectedRows([]);
+      toast.success('Selected products deleted successfully');
+    } catch (error) {
+      console.error('Error deleting selected products:', error);
+      toast.error('Error deleting selected products');
+    }
   };
 
   const columns: GridColDef[] = [
@@ -120,6 +146,8 @@ function ProductManagement() {
     },
   ];
 
+  const isDeleteButtonDisabled = selectedRows.length === 0; // Disable delete button if no rows are selected
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={1}>
@@ -127,8 +155,17 @@ function ProductManagement() {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Title>PRODUCT MANAGEMENT</Title>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', my: 2 }}>
-              <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddProduct}>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddProduct}>
                 Add new product
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteSelected}
+                disabled={isDeleteButtonDisabled}
+                sx={{ ml: 2 }}
+              >
+                Delete selected
               </Button>
             </Box>
             {isLoading ? (
@@ -140,13 +177,16 @@ function ProductManagement() {
                   columns={columns}
                   pageSizeOptions={[5, 10, 20, 50, 100, 500]}
                   autoHeight
-                  getRowId={(row) => row.id}
+                  getRowId={(row) => row.id.toString()}
+                  checkboxSelection
+                  onRowSelectionModelChange={(newRowSelectionModel) => {
+                    setSelectedRows(newRowSelectionModel);
+                  }}
                   initialState={{
                     pagination: {
-                      paginationModel: { page: 0, pageSize: 10 },
+                      paginationModel: { page: 0, pageSize: 20 },
                     },
                   }}
-                  checkboxSelection
                 />
               </div>
             )}
@@ -158,3 +198,4 @@ function ProductManagement() {
 }
 
 export default ProductManagement;
+

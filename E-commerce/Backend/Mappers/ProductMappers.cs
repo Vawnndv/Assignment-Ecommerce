@@ -74,7 +74,8 @@ namespace Backend.Mappers
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
                 CategoryId = productDto.CategoryId,
-                ProductTypes = productDto.ProductTypes.Select(s => s.ToProductTypeFromCreateDTO()).ToList()
+                ProductTypes = productDto.ProductTypes.Select(s => s.ToProductTypeFromCreateDTO()).ToList(),
+                Ratings = []
             };
         }
     }

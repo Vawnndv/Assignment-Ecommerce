@@ -7,7 +7,7 @@ import Layout from './components/layout/Layout';
 import CategoryManagement from './pages/category/CategoryManagement';
 import ProductManagement from './pages/product/ProductManagement';
 import UserManagement from './pages/user/UserManagement';
-import ProductDetails from './pages/product/ProductDetails';
+import ProductFormPage from './pages/product/ProductForm/ProductFormPage';
 
 export function App() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -20,7 +20,8 @@ export function App() {
         <Route path="/categories/:id" element={<CategoryManagement />} />
         <Route path="/categories" element={<CategoryManagement />} />
         <Route path="/products" element={<ProductManagement/>} />
-        <Route path="/products/:id" element={<ProductDetails/>} />
+        <Route path="/products/new" element={<ProductFormPage />} />
+        <Route path="/products/:productId/edit" element={<ProductFormPage />} />
         <Route path="/users" element={<UserManagement/>} />
       </Route>
     </Routes>

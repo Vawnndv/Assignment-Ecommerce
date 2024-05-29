@@ -111,7 +111,7 @@ const CategoryManagement = () => {
             <Title>CATEGORY MANAGEMENT</Title>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 2 }}>
               <CategoryBreadcrumbs categoryId={id ? parseInt(id) : null} />
-              <Button variant="outlined" startIcon={<AddIcon />} onClick={handleAddCategory}>
+              <Button variant="contained" startIcon={<AddIcon />} onClick={handleAddCategory}>
                 Add new category
               </Button>
             </Box>

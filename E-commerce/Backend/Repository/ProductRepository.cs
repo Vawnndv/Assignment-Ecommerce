@@ -155,6 +155,7 @@ namespace Backend.Repository
             var existingProduct = await _context.Products
                 .Include(p => p.ProductTypes)
                     .ThenInclude(pt => pt.ProductImages)
+                .Include(p => p.Ratings)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (existingProduct == null)

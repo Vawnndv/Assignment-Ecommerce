@@ -29,8 +29,6 @@ interface Product {
   description: string;
   price: number;
   discount: number;
-  createdDate: string;  // or Date if you plan to convert it
-  updatedDate: string;  // or Date if you plan to convert it
   categoryId: number;
   productTypes: ProductType[];
   ratings: ProductRating[];
@@ -58,8 +56,6 @@ const convertProductToJson = (product: Product): string => {
     description: product.description,
     price: product.price,
     discount: product.discount,
-    createdDate: product.createdDate,
-    updatedDate: product.updatedDate,
     categoryId: product.categoryId,
     productTypes: product.productTypes.map(type => ({
       id: type.id,
@@ -91,8 +87,6 @@ const convertJsonToProduct = (data: any): Product => {
     description: data.description,
     price: data.price,
     discount: data.discount,
-    createdDate: data.createdDate,
-    updatedDate: data.updatedDate,
     categoryId: data.categoryId,
     productTypes: data.productTypes.map((type: any) => ({
       id: type.id,
