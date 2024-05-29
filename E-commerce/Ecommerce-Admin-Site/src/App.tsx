@@ -8,6 +8,8 @@ import CategoryManagement from './pages/category/CategoryManagement';
 import ProductManagement from './pages/product/ProductManagement';
 import UserManagement from './pages/user/UserManagement';
 import ProductFormPage from './pages/product/ProductForm/ProductFormPage';
+import { ProtectedRouter } from './ProtectedRouter';
+import NotFound from './pages/NotFound/NotFound';
 
 export function App() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -16,13 +18,16 @@ export function App() {
     <Routes> 
       <Route path="/Login" element={<Login rememberMe={rememberMe} setRememberMe={setRememberMe} />} />
       <Route path='/' element={<Layout/>}>
-        <Route path="/" element={<Home/>} />
-        <Route path="/categories/:id" element={<CategoryManagement />} />
-        <Route path="/categories" element={<CategoryManagement />} />
-        <Route path="/products" element={<ProductManagement/>} />
-        <Route path="/products/new" element={<ProductFormPage />} />
-        <Route path="/products/:productId/edit" element={<ProductFormPage />} />
-        <Route path="/users" element={<UserManagement/>} />
+        <Route path="*" element={<NotFound />} />
+        <Route element={<ProtectedRouter />}>
+          <Route path="/" element={<Home/>} />
+          <Route path="/categories/:id" element={<CategoryManagement />} />
+          <Route path="/categories" element={<CategoryManagement />} />
+          <Route path="/products" element={<ProductManagement/>} />
+          <Route path="/products/new" element={<ProductFormPage />} />
+          <Route path="/products/:productId/edit" element={<ProductFormPage />} />
+          <Route path="/users" element={<UserManagement/>} />
+        </Route>
       </Route>
     </Routes>
   )
