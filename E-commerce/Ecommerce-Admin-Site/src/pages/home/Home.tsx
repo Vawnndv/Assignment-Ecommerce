@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Deposits from '../dashboard/Deposits';
 import Orders from '../dashboard/Orders';
+import Chart from '../dashboard/Chart';
 
 function Home() {
 
@@ -20,7 +21,7 @@ function Home() {
               height: 240,
             }}
           >
-            Chart
+            <Chart/>
           </Paper>
         </Grid>
         {/* Recent Deposits */}

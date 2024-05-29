@@ -92,5 +92,87 @@ namespace Backend.Controllers
                 return StatusCode(500, e);
             }
         }
+
+        [HttpPost("register-admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterVmDto registerDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var appUser = new AppUser
+                {
+                    UserName = registerDto.Username,
+                    Email = registerDto.Email
+                };
+
+                var createUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+
+                if (createUser.Succeeded)
+                {
+                    var roleResult = await _userManager.AddToRoleAsync(appUser, "Admin");
+                    if (roleResult.Succeeded)
+                    {
+                        return Ok(
+                            new NewUserVmDto
+                            {
+                                UserName = appUser.UserName,
+                                Email = appUser.Email,
+                                Token = _tokenService.CreateToken(appUser)
+                            }
+                        );
+                    }
+                    else
+                    {
+                        return StatusCode(500, roleResult.Errors);
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, createUser.Errors);
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpGet("users-in-role/user")]
+        public async Task<IActionResult> GetAllUsersWithUserRole()
+        {
+            var usersInUserRole = await _userManager.GetUsersInRoleAsync("User");
+            var userDtos = new List<UserVmDto>();
+
+            foreach (var user in usersInUserRole)
+            {
+                userDtos.Add(new UserVmDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email
+                });
+            }
+
+            return Ok(userDtos);
+        }
+
+        [HttpGet("users-in-role/admin")]
+        public async Task<IActionResult> GetAllUsersWithAdminRole()
+        {
+            var usersInAdminRole = await _userManager.GetUsersInRoleAsync("Admin");
+            var userDtos = new List<UserVmDto>();
+
+            foreach (var user in usersInAdminRole)
+            {
+                userDtos.Add(new UserVmDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email
+                });
+            }
+
+            return Ok(userDtos);
+        }
     }
 }
