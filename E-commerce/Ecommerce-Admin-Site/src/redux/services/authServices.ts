@@ -7,7 +7,7 @@ const loginService = async (user: LoginModel): Promise<any> => {
   const data = await Axios.post('/account/login', {...user});
   if (data) {
     // Save userInfo in cookie
-    Cookies.set('userInfo', JSON.stringify(data), { expires: 1 / 1440 }); // Expire Set temp in 1"
+    Cookies.set('userInfo', JSON.stringify(data), { expires: 1 }); // Expire Set temp in 1 day
   }
 
   return data;

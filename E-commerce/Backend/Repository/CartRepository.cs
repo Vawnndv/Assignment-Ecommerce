@@ -23,9 +23,9 @@ namespace Backend.Repository
             return cartModel;
         }
 
-        public async Task<Cart?> DeleteAsync(int id)
+        public async Task<Cart?> DeleteAsync(AppUser appUser)
         {
-            var cartModel = await _context.Carts.FirstOrDefaultAsync(x => x.Id == id);
+            var cartModel = await _context.Carts.FirstOrDefaultAsync(x => x.AppUserId == appUser.Id);
 
             if (cartModel == null)
             {
@@ -36,12 +36,11 @@ namespace Backend.Repository
             return cartModel;
         }
 
-        public async Task<List<Cart>> GetAllAsync(AppUser appUser)
+        public async Task<Cart?> GetAllAsync(AppUser appUser)
         {
             return await _context.Carts
                 .Include(c => c.CartItems)
-                .Where(c => c.AppUserId == appUser.Id)
-                .ToListAsync();
+                .FirstOrDefaultAsync(c => c.AppUserId == appUser.Id);
         }
 
         public async Task<Cart?> GetByIdAsync(int id)
@@ -54,11 +53,11 @@ namespace Backend.Repository
             return _context.Carts.AnyAsync(s => s.Id == id);
         }
 
-        public async Task<Cart?> UpdateAsync(int id, UpdateCartVmDto cartDto)
+        public async Task<Cart?> UpdateAsync(UpdateCartVmDto cartDto, AppUser appUser)
         {
             var existingCart = await _context.Carts
                 .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.AppUserId == appUser.Id);
 
             if (existingCart == null)
             {

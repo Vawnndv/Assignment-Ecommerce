@@ -38,5 +38,13 @@ namespace Ecommerce_Customers_Site.Helpers
 
             return await client.PostAsync(url, content);
         }
+
+        public static async Task<HttpResponseMessage> PutAsJsonAsync<T>(this HttpClient client, string url, T data)
+        {
+            var jsonContent = JsonSerializer.Serialize(data);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            return await client.PutAsync(url, content);
+        }
     }
 }

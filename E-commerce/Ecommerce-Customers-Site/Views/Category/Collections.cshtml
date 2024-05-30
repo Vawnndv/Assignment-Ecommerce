@@ -99,3 +99,34 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript" asp-append-version="true">
+        function addToCart(productId, quantity, unitPrice) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8', // Ensure the data is sent as JSON
+                data: JSON.stringify({
+                    ProductId: productId,
+                    Quantity: quantity,
+                    UnitPrice: unitPrice
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        alert('Product added to cart!');
+                        // Update cart count
+                        updateCartCount(response.cartCount);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Error adding product to cart.');
+                }
+            });
+        }
+
+        function updateCartCount(cartCount) {
+            $('.badge').text(cartCount);
+        }
+    </script>
+}

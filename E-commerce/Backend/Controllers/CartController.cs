@@ -39,7 +39,7 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            var cartDto = cart.Select(s => s.ToCartDto());
+            var cartDto = cart.ToCartDto();
 
             return Ok(cartDto);
         }
@@ -77,9 +77,9 @@ namespace Backend.Controllers
             return CreatedAtAction(nameof(GetById), new { id = cartModel.Id }, cartModel.ToCartDto());
         }
 
-        // PUT: api/cart/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCartVmDto updateDto)
+        // PUT: api/cart
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateCartVmDto updateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -87,7 +87,7 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cartModel = await _cartRepo.UpdateAsync(id, updateDto);
+            var cartModel = await _cartRepo.UpdateAsync(updateDto, appUser);
 
             if (cartModel == null)
             {
@@ -97,14 +97,17 @@ namespace Backend.Controllers
             return Ok(cartModel.ToCartDto());
         }
 
-        // DELETE: api/cart/{id}
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        // DELETE: api/cart
+        [HttpDelete]
+        public async Task<IActionResult> Delete()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productModel = await _cartRepo.DeleteAsync(id);
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            var productModel = await _cartRepo.DeleteAsync(appUser);
 
             if (productModel == null)
             {

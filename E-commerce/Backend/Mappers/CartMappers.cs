@@ -11,6 +11,7 @@ namespace Backend.Mappers
             return new CartItemVmDto
             {
                 Id = cartModel.Id,
+                ProductId = cartModel.ProductId,
                 Quantity = cartModel.Quantity,
                 UnitPrice = cartModel.UnitPrice
             };

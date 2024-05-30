@@ -12,12 +12,10 @@
             </button>
             <div class="collapse navbar-collapse">
                 @await Component.InvokeAsync("Categories")
-                <div class="d-flex align-items-center ms-auto mx-2">
-                    <a href="#" class="position-relative me-3">
-                        <i class="bi text-dark bi-cart fs-4"></i>
-                        <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">4</span>
-                    </a>
-                </div>
+                @if (Context.Request.Cookies["token"] != null)
+                {
+                    @await Component.InvokeAsync("CartIcon")
+                }
                 <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-dark" type="submit">Search</button>

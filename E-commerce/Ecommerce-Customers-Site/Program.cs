@@ -1,6 +1,7 @@
 using Ecommerce_Customers_Site.Handlers;
 using Ecommerce_Customers_Site.Middleware;
 using Ecommerce_Customers_Site.Services.Account;
+using Ecommerce_Customers_Site.Services.Cart;
 using Ecommerce_Customers_Site.Services.Category;
 using Ecommerce_Customers_Site.Services.Product;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,11 @@ builder.Services.AddHttpClient<IProductAPIService, ProductAPIService>(c =>
 c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
 builder.Services.AddHttpClient<IAccountAPIService, AccountAPIService>(c =>
 c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
+builder.Services.AddHttpClient<ICartAPIService, CartAPIService>(c =>
+c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
+
+// Register to use in View Component
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -39,6 +45,7 @@ app.UseRouting();
 
 // Use custom error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
 
 app.UseAuthorization();
 
