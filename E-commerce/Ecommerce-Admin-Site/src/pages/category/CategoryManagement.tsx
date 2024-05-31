@@ -5,6 +5,7 @@ import CategoryBreadcrumbs from './CategoryBreadcrumbs';
 import AddIcon from '@mui/icons-material/Add';
 import CategoryDetails from './CategoryDetails';
 import CategoryModal from './CategoryModal';
+import ConfirmDialog from '../../components/ConfirmDialog'; // Đảm bảo đường dẫn đúng tới file ConfirmDialog
 import { Category } from '../../Models/CategoryModels';
 import {
   getAllCategoryService,
@@ -13,7 +14,7 @@ import {
   createNewCategoryService,
   deleteCategoryByIdService
 } from '../../redux/services/categoryServices';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const CategoryManagement = () => {
@@ -23,7 +24,11 @@ const CategoryManagement = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isFetchData, setIsFetchData] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<number | null>(null);
   const { id } = useParams(); // Get the ID from route params
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
@@ -55,8 +60,8 @@ const CategoryManagement = () => {
       const categoryData = await getCategoryByIdService(categoryId);
       setCurrentCategory(categoryData);
     } catch (error) {
-      console.error('Error fetching category:', error);
-      toast.error('Error fetching category');
+      navigate('/categories')
+      window.location.reload();
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +82,7 @@ const CategoryManagement = () => {
     try {
       await deleteCategoryByIdService(categoryId);
       setIsFetchData(!isFetchData);
+      toast.success('Category deleted successfully');
     } catch (error) {
       console.error('Error deleting category:', error);
       toast.error('Error deleting category');
@@ -103,6 +109,18 @@ const CategoryManagement = () => {
     }
   };
 
+  const handleOpenConfirmDialog = (categoryId: number) => {
+    setCategoryToDelete(categoryId);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (categoryToDelete !== null) {
+      handleDeleteCategory(categoryToDelete);
+    }
+    setConfirmDialogOpen(false);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={1}>
@@ -116,13 +134,15 @@ const CategoryManagement = () => {
               </Button>
             </Box>
             {isLoading ? (
-              <CircularProgress />
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
             ) : (
               id !== null ? ( // If ID is not null, show category details
                 <CategoryDetails
                   category={currentCategory ?? null}
                   onEditCategory={handleEditCategory}
-                  onDeleteCategory={handleDeleteCategory}
+                  onDeleteCategory={handleOpenConfirmDialog}
                   categories={currentCategory == null ? categories : currentCategory.subCategories }
                 />
               ) : null
@@ -135,6 +155,13 @@ const CategoryManagement = () => {
         onClose={() => setModalOpen(false)}
         onSave={handleSaveCategory}
         category={selectedCategory}
+      />
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        title="Confirm Delete"
+        content="Are you sure you want to delete this category?"
+        onClose={() => setConfirmDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
       />
     </Container>
   );

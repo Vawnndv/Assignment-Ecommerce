@@ -33,7 +33,7 @@ namespace Ecommerce_Customers_Site.Middleware
             }
             catch (Exception ex)
             {
-                // Log the exception (you can use any logging framework)
+                // Log the exception
                 Console.WriteLine($"Something went wrong: {ex.Message}");
                 context.Response.Redirect("/Home/Error");
             }

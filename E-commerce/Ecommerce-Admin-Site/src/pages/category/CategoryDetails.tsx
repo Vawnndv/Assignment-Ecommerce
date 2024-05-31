@@ -78,7 +78,7 @@ const CategoryDetails: React.FC<CategoryDetailsProps> = ({ category, onEditCateg
                         <EditIcon />
                       </Tooltip>
                     </IconButton>
-                    <IconButton onClick={() => onDeleteCategory(subCategory.id)} color="secondary">
+                    <IconButton onClick={() => onDeleteCategory(subCategory.id)} color="secondary" disabled={subCategory.subCategories.length > 0}>
                       <Tooltip title="Delete Subcategory">
                         <DeleteIcon />
                       </Tooltip>

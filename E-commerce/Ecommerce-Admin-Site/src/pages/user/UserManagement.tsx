@@ -158,7 +158,9 @@ function AdminManagement() {
               </Button>
             </Box>
             {isLoading ? (
-              <CircularProgress />
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
             ) : (
               <div style={{ height: 'auto', width: '100%' }}>
                 <Typography variant="h6" gutterBottom>

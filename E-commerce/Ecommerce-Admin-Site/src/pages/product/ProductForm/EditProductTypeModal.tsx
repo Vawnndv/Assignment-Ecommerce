@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { imageDb } from '../../../FirebaseStorage/config';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 interface EditProductTypeModalProps {
   open: boolean;
@@ -58,9 +58,20 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
     }
   };
 
-  const handleImageDelete = (imageId: number) => {
-    setProductImages(productImages.filter(img => img.id !== imageId));
-  };
+  const handleImageDelete = async (imageId: number, imageUrl: string) => {
+    // Create a reference to the file to delete
+    const imageRef = ref(imageDb, imageUrl);
+  
+    try {
+      // Delete the file
+      await deleteObject(imageRef);
+      // Update state to remove the image
+      setProductImages(productImages.filter(img => img.id !== imageId));
+    } catch (error) {
+      toast.error('Error deleting image');
+      console.error('Error deleting image:', error);
+    }
+  }
 
   const handleSave = () => {
     if (productType) {
@@ -124,7 +135,7 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
           {productImages.map(image => (
             <Grid item key={image.id}>
               <img src={image.imageUrl} alt="product" style={{ width: 100, height: 100 }} />
-              <IconButton onClick={() => handleImageDelete(image.id)}>
+              <IconButton onClick={() => handleImageDelete(image.id, image.imageUrl)}>
                 <DeleteIcon />
               </IconButton>
             </Grid>

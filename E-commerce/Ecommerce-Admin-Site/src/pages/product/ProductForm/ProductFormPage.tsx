@@ -91,7 +91,6 @@ function ProductFormPage() {
         await createNewProductService(updatedProduct);
       }
       // Redirect to product management page after submission
-      // You may replace this navigation logic with your own
       navigate('/products');
     } catch (error) {
       console.error('Error submitting product:', error);

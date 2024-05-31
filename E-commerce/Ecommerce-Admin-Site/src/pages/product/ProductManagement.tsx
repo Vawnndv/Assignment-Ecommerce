@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ConfirmDialog from '../../components/ConfirmDialog';
 
 const query: ProductQuery = {
   PageSize: 1000,
@@ -21,6 +22,9 @@ function ProductManagement() {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]); // State to store selected rows
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmDialogOpenSelected, setConfirmDialogOpenSelected] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -74,6 +78,27 @@ function ProductManagement() {
       console.error('Error deleting selected products:', error);
       toast.error('Error deleting selected products');
     }
+  };
+
+  const handleOpenConfirmDeleteSelected = () => {
+    setConfirmDialogOpenSelected(true);
+  };
+
+  const handleConfirmDeleteSelected = () => {
+    handleDeleteSelected();
+    setConfirmDialogOpenSelected(false);
+  };
+
+  const handleOpenConfirmDialog = (productId: number) => {
+    setProductToDelete(productId);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (productToDelete !== null) {
+      handleDeleteProduct(productToDelete);
+    }
+    setConfirmDialogOpen(false);
   };
 
   const columns: GridColDef[] = [
@@ -136,7 +161,7 @@ function ProductManagement() {
               <EditIcon />
             </Tooltip>
           </IconButton>
-          <IconButton onClick={() => handleDeleteProduct(params.row.id)} color="secondary">
+          <IconButton onClick={() => handleOpenConfirmDialog(params.row.id)} color="secondary">
             <Tooltip title="Delete product">
               <DeleteIcon />
             </Tooltip>
@@ -161,7 +186,7 @@ function ProductManagement() {
               <Button
                 variant="contained"
                 startIcon={<DeleteIcon />}
-                onClick={handleDeleteSelected}
+                onClick={handleOpenConfirmDeleteSelected}
                 disabled={isDeleteButtonDisabled}
                 sx={{ ml: 2 }}
               >
@@ -169,7 +194,9 @@ function ProductManagement() {
               </Button>
             </Box>
             {isLoading ? (
-              <CircularProgress />
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
             ) : (
               <div style={{ height: 'auto', width: '100%' }}>
                 <DataGrid
@@ -193,6 +220,21 @@ function ProductManagement() {
           </Paper>
         </Grid>
       </Grid>
+
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        title="Confirm Delete"
+        content="Are you sure you want to delete this product?"
+        onClose={() => setConfirmDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
+      <ConfirmDialog
+        open={confirmDialogOpenSelected}
+        title="Confirm Delete all"
+        content="Are you sure you want to delete all this products?"
+        onClose={() => setConfirmDialogOpenSelected(false)}
+        onConfirm={handleConfirmDeleteSelected}
+      />
     </Container>
   );
 }

@@ -16,7 +16,6 @@ const loginAction = (data: LoginModel): ThunkAction<void, RootState, unknown, Ac
       payload: response
     });
   } catch (error) {
-    console.log('ERROR', error)
     ErrorsAction(error, dispatch, authConstants.USER_LOGIN_FAIL);
   }
 };
