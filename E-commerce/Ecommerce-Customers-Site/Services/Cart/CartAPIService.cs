@@ -57,39 +57,10 @@ namespace Ecommerce_Customers_Site.Services.Cart
             return await response.ReadContentAsync<CartVmDto>();
         }
 
-        //public async Task AddToCart(CreateCartRequestVmDto cartItem)
-        //{
-        //    var cart = await GetAll();
-        //    if (cart == null || cart.CartItems.Count == 0)
-        //    {
-        //        await Create(cartItem);
-        //    }
-        //    else
-        //    {
-        //        var updateCartVmDto = new UpdateCartVmDto
-        //        {
-        //            CartItems = cart.CartItems.Select(item => new UpdateCartItemVmDto
-        //            {
-        //                Id = item.Id,
-        //                ProductId = item.ProductId,
-        //                Quantity = item.Quantity,
-        //                UnitPrice = item.UnitPrice
-        //            }).Concat(cartItem.CartItems.Select(newItem => new UpdateCartItemVmDto
-        //            {
-        //                Id = 0,
-        //                ProductId = newItem.ProductId,
-        //                Quantity = newItem.Quantity,
-        //                UnitPrice = newItem.UnitPrice
-        //            })).ToList()
-        //        };
-        //        await Update(updateCartVmDto);
-        //    }
-        //}
-
         public async Task AddToCart(CreateCartRequestVmDto cartItem)
         {
             var cart = await GetAll();
-            if (cart == null || cart.CartItems.Count == 0)
+            if (cart == null)
             {
                 await Create(cartItem);
             }
@@ -135,6 +106,35 @@ namespace Ecommerce_Customers_Site.Services.Cart
         {
             var cart = await GetAll();
             return cart?.CartItems.Count ?? 0;
+        }
+
+        public async Task UpdateCart(int productId, int change)
+        {
+            var cart = await GetAll();
+            var existingItem = cart.CartItems.FirstOrDefault(item => item.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity += change;
+
+                if (existingItem.Quantity <= 0)
+                {
+                    cart.CartItems.Remove(existingItem);
+                }
+
+                var updateCartDto = new UpdateCartVmDto
+                {
+                    CartItems = cart.CartItems.Select(item => new UpdateCartItemVmDto
+                    {
+                        Id = item.Id,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice
+                    }).ToList()
+                };
+
+                await Update(updateCartDto);
+            }
         }
     }
 }

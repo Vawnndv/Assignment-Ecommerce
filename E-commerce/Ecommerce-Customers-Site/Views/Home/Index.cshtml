@@ -112,13 +112,13 @@
                 }),
                 success: function (response) {
                     if (response.success) {
-                        alert('Product added to cart!');
+                        showToast('success', 'Product added to cart!');
                         // Update cart count
                         updateCartCount(response.cartCount);
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert('Error adding product to cart.');
+                    showToast('danger', 'Error adding product to cart.');
                 }
             });
         }

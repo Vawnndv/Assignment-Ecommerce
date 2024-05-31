@@ -2,10 +2,80 @@
 @model CartVmDto
 
 @{
-    ViewData["Title"] = "Category";
+    ViewData["Title"] = "Cart";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Cart page</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row my-5">
+    <div class="col-md-8 border">
+        @if (Model != null)
+        {
+            @foreach (var item in Model.CartItems)
+            {
+                @await Component.InvokeAsync("CartItem", item)
+            }
+        } else
+        {
+            <div class="text-center my-5">
+                <h2>Your cart is currently empty</h2>
+                <p>Please explore more products in our shop!</p>
+            </div>
+        }
+    </div>
+    <div class="col-md-4">
+        <div class="cart-summary p-3 border">
+            <h4 class="mb-3">Information Order</h4>
+            <div class="mb-2">
+                <label for="promoCode" class="form-label">Code discount</label>
+                <input type="text" id="promoCode" class="form-control">
+                <a href="#" class="d-block mt-2">View all</a>
+                <button class="btn btn-outline-danger mt-2">Discount 5%</button>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                @if (Model != null)
+                {
+                    <span>Temporary (@Model.CartItems.Count items)</span>
+                    <span>@Model.CartItems.Sum(item => item.UnitPrice * item.Quantity).ToString("C")</span>
+                }
+                else
+                {
+                    <span>Temporary</span>
+                    <span>$0.00</span>
+                }
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+                <span>Total</span>
+                @if (Model != null)
+                {
+                    <span class="text-danger fw-bold">@Model.TotalAmount.ToString("C")</span>
+                } else
+                {
+                    <span class="text-danger fw-bold">$0.00</span>
+                }
+            </div>
+            @if (Model != null)
+            {
+                <button class="btn btn-dark btn-lg mt-3 w-100">CHECKOUT</button>
+            }
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function updateQuantityItemCart(productId, change) {
+            $.ajax({
+                url: '@Url.Action("UpdateCart", "Cart")' + '?productId=' + productId + '&change=' + change,
+                type: 'POST',
+                success: function (response) {
+                    // Update the cart view
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    showToast('danger', 'Error updating cart item.');
+                }
+            });
+        }
+    </script>
+}

@@ -11,6 +11,7 @@ namespace Ecommerce_Customers_Site.Services.Cart
         Task<CartVmDto> Update(UpdateCartVmDto cart);
         Task<CartVmDto> Delete();
         public Task AddToCart(CreateCartRequestVmDto cartItem);
+        public Task UpdateCart(int productId, int change);
         public Task<int> GetCartItemCount();
     }
 }

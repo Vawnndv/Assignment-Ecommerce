@@ -135,3 +135,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Handle Show Toast
+function showToast(type, message) {
+    // Create a new toast element
+    var toast = document.createElement('div');
+    toast.className = 'toast align-items-center text-bg-' + type + ' border-0 show';
+    toast.role = 'alert';
+    toast.ariaLive = 'assertive';
+    toast.ariaAtomic = 'true';
+    toast.setAttribute('data-bs-autohide', 'true');
+    toast.setAttribute('data-bs-delay', '5000'); // Hide after 5 seconds
+
+    // Toast header
+    var toastHeader = document.createElement('div');
+    toastHeader.className = 'toast-header';
+    var strong = document.createElement('strong');
+    strong.className = 'me-auto';
+    strong.innerText = 'Notification'; // Title of the toast
+    var small = document.createElement('small');
+    small.innerText = 'Just now';
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn-close';
+    button.dataset.bsDismiss = 'toast';
+    button.ariaLabel = 'Close';
+
+    toastHeader.appendChild(strong);
+    toastHeader.appendChild(small);
+    toastHeader.appendChild(button);
+
+    // Toast body
+    var toastBody = document.createElement('div');
+    toastBody.className = 'toast-body';
+    toastBody.innerText = message;
+
+    toast.appendChild(toastHeader);
+    toast.appendChild(toastBody);
+
+    // Append the toast to the toast container
+    document.getElementById('toastContainer').appendChild(toast);
+
+    // Initialize the toast with Bootstrap
+    var bootstrapToast = new bootstrap.Toast(toast);
+    bootstrapToast.show();
+}

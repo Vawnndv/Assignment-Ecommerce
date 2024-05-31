@@ -32,9 +32,9 @@ function AdminManagement() {
       setIsLoading(true);
       try {
         const usersData = await getAllUsersService();
-        const adminsData = await getAllAdminsService(); // Lấy thông tin của tất cả các admin
+        const adminsData = await getAllAdminsService();
         setUsers(usersData);
-        setAdmins(adminsData); // Cập nhật danh sách admin
+        setAdmins(adminsData);
       } catch (error) {
         console.error('Error fetching users:', error);
       } finally {
@@ -133,7 +133,7 @@ function AdminManagement() {
     },
   ];
 
-  const adminColumns: GridColDef[] = [ // Thêm cột mới cho bảng hiển thị admin
+  const adminColumns: GridColDef[] = [
     {
       field: 'userName',
       headerName: 'Admin Name',
