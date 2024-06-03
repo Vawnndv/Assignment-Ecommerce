@@ -1,22 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Grid, IconButton } from '@mui/material';
-import { ProductType, ProductImage } from '../../../Models/ProductModel';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { imageDb } from '../../../FirebaseStorage/config';
-import { toast } from 'react-toastify';
-import { v4 as uuidv4 } from 'uuid';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import React, { useEffect, useState } from "react";
+import {
+  TextField,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  IconButton,
+} from "@mui/material";
+import { ProductType, ProductImage } from "../../../Models/ProductModel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 interface EditProductTypeModalProps {
+  deleteImages: (url: string) => void;
   open: boolean;
   productType: ProductType | null;
   onClose: () => void;
   onSave: (productType: ProductType) => void;
 }
 
-const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, productType, onClose, onSave }) => {
-  const [type, setType] = useState('');
-  const [description, setDescription] = useState('');
+const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({
+  deleteImages,
+  open,
+  productType,
+  onClose,
+  onSave,
+}) => {
+  const [type, setType] = useState("");
+  const [description, setDescription] = useState("");
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
 
   useEffect(() => {
@@ -25,8 +38,8 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
       setDescription(productType.description);
       setProductImages(productType.productImages || []);
     } else {
-      setType('');
-      setDescription('');
+      setType("");
+      setDescription("");
       setProductImages([]);
     }
   }, [productType]);
@@ -34,44 +47,55 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
   // Function to upload image to Firebase storage
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    const uniqueId = uuidv4();
-    
+
     if (files) {
       try {
         const uploadPromises = Array.from(files).map(async (file) => {
-          const storageRef = ref(imageDb, `${uniqueId}_${file.name}`);
-          await uploadBytes(storageRef, file);
-          const imageUrl = await getDownloadURL(ref(imageDb, `${uniqueId}_${file.name}`));
+          // Create a preview URL for the image
+          const previewUrl: string = await new Promise<string>(
+            (resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => {
+                if (typeof reader.result === "string") {
+                  resolve(reader.result);
+                } else {
+                  reject(new Error("File reading failed"));
+                }
+              };
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            }
+          );
+
           return {
-            id: Math.floor(Math.random() * 10000000), // Random id, replace with actual logic if needed
-            imageUrl: imageUrl,
+            id: Math.floor(Math.random() * 10000000),
+            imageUrl: previewUrl, // Use previewUrl for immediate display
             productTypeId: productType ? productType.id : 0,
           };
         });
-  
+
         const uploadedImages = await Promise.all(uploadPromises);
         setProductImages([...productImages, ...uploadedImages]);
       } catch (error) {
-        toast.error('Error uploading images');
-        console.error('Error uploading images:', error);
+        toast.error("Error uploading images");
+        console.error("Error uploading images:", error);
       }
     }
   };
 
   const handleImageDelete = async (imageId: number, imageUrl: string) => {
-    // Create a reference to the file to delete
-    const imageRef = ref(imageDb, imageUrl);
-  
+
     try {
-      // Delete the file
-      await deleteObject(imageRef);
-      // Update state to remove the image
-      setProductImages(productImages.filter(img => img.id !== imageId));
+      
+      if (!imageUrl.startsWith('data:image/')) {
+        deleteImages(imageUrl)
+      }
+      setProductImages(productImages.filter((img) => img.id !== imageId));
     } catch (error) {
-      toast.error('Error deleting image');
-      console.error('Error deleting image:', error);
+      toast.error("Error deleting image");
+      console.error("Error deleting image:", error);
     }
-  }
+  };
 
   const handleSave = () => {
     if (productType) {
@@ -90,15 +114,17 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
         productImages,
       });
     }
-    setType('');
-    setDescription('');
+    setType("");
+    setDescription("");
     setProductImages([]);
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{productType ? 'Edit Product Type' : 'Add Product Type'}</DialogTitle>
+      <DialogTitle>
+        {productType ? "Edit Product Type" : "Add Product Type"}
+      </DialogTitle>
       <DialogContent>
         <TextField
           label="Type"
@@ -123,19 +149,30 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
           type="file"
           multiple
           onChange={handleImageUpload}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           id="product-images-upload"
         />
         <label htmlFor="product-images-upload">
-          <Button sx={{my: 3}} variant="contained" color="primary" component="span">
+          <Button
+            sx={{ my: 3 }}
+            variant="contained"
+            color="primary"
+            component="span"
+          >
             Upload Images
           </Button>
         </label>
         <Grid container spacing={2} sx={{ mt: 2 }}>
-          {productImages.map(image => (
+          {productImages.map((image) => (
             <Grid item key={image.id}>
-              <img src={image.imageUrl} alt="product" style={{ width: 100, height: 100 }} />
-              <IconButton onClick={() => handleImageDelete(image.id, image.imageUrl)}>
+              <img
+                src={image.imageUrl}
+                alt="product"
+                style={{ width: 100, height: 100 }}
+              />
+              <IconButton
+                onClick={() => handleImageDelete(image.id, image.imageUrl)}
+              >
                 <DeleteIcon />
               </IconButton>
             </Grid>
@@ -143,7 +180,14 @@ const EditProductTypeModal: React.FC<EditProductTypeModalProps> = ({ open, produ
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={handleSave} disabled={!(type !== '' && description !== '' && productImages.length !== 0)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSave}
+          disabled={
+            !(type !== "" && description !== "" && productImages.length !== 0)
+          }
+        >
           Save
         </Button>
         <Button onClick={onClose} color="primary">

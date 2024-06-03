@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ProductDetailsForm from './ProductDetailsForm';
 import CategorySelection from './CategorySelection';
@@ -12,6 +12,14 @@ import { Product, ProductType } from '../../../Models/ProductModel';
 import { Category } from '../../../Models/CategoryModels';
 import { Container, Grid, Paper, Button } from '@mui/material';
 import Title from '../../../components/Title';
+import { imageDb } from '../../../FirebaseStorage/config';
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
 const emptyProduct: Product = {
   id: 0, // Hoặc bất kỳ giá trị mặc định nào cho các thuộc tính
@@ -48,6 +56,25 @@ function isProductValid(product: Product): boolean {
   );
 }
 
+const handleImageUpload = async (base64Image: string): Promise<string> => {
+  const uniqueId = uuidv4();
+  const response = await fetch(base64Image);
+  const blob = await response.blob();
+  const storageRef = ref(imageDb, `${uniqueId}.png`); // Adjust the file extension as needed
+  await uploadBytes(storageRef, blob);
+  const imageUrl = await getDownloadURL(storageRef);
+  return imageUrl;
+};
+
+const deleteImage = async (imageUrl: string) => {
+  const imageRef = ref(imageDb, imageUrl);
+  try {
+    await deleteObject(imageRef);
+  } catch (error) {
+    console.error('Error deleting image:', error);
+  }
+};
+
 function ProductFormPage() {
   const navigate = useNavigate();
   const { productId } = useParams();
@@ -55,6 +82,8 @@ function ProductFormPage() {
   const [product, setProduct] = useState<Product>(emptyProduct);
   const [isEditMode, setIsEditMode] = useState<boolean>(!isEditing);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [imagesDelete, setImagesDelete] = useState<string[]>([]);
 
   useEffect(() => {
     // If editing, fetch product data by ID
@@ -71,6 +100,10 @@ function ProductFormPage() {
     }
   }, [product]);
 
+  const deleteImages = useCallback((url: string) => {
+    setImagesDelete((prevImagesDelete) => [...prevImagesDelete, url]);
+  }, []);
+
   const fetchProductData = async (id: string) => {
     try {
       const productData = await getProductByIdService(parseInt(id));
@@ -83,6 +116,23 @@ function ProductFormPage() {
   const handleSubmit = async (formData: Partial<Product>) => {
     try {
       const updatedProduct = { ...product, ...formData } as Product;
+      setIsLoading(true)
+
+      // Check and upload base64 images
+      for (const productType of updatedProduct.productTypes) {
+        for (const productImage of productType.productImages) {
+          if (productImage.imageUrl.startsWith('data:image/')) {
+            // Upload base64 image to Firebase and replace with the URL
+            productImage.imageUrl = await handleImageUpload(productImage.imageUrl);
+          }
+        }
+      }
+
+      // Delete old images not referenced in the updated product
+      for (const imageUrl of imagesDelete) {
+        await deleteImage(imageUrl);
+      }
+
       if (isEditing && productId && product) {
         // If editing, update existing product
         await updateProductByIdService(updatedProduct);
@@ -90,11 +140,11 @@ function ProductFormPage() {
         // If creating new, create a new product
         await createNewProductService(updatedProduct);
       }
+      setIsLoading(false);
       // Redirect to product management page after submission
       navigate('/products');
     } catch (error) {
       console.error('Error submitting product:', error);
-      // Handle error
     }
   };
 
@@ -132,6 +182,7 @@ function ProductFormPage() {
           >
             <Title>{isEditing ? 'Edit Product' : 'Add New Product'}</Title>
             <ProductDetailsForm
+              isLoading={isLoading}
               isValid={isValid}
               product={product}
               setProduct={setProduct}
@@ -161,6 +212,7 @@ function ProductFormPage() {
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Title>Variant</Title>
             <ProductTypeSelection
+              deleteImages={deleteImages}
               productTypes={product.productTypes}
               handleProductTypeChange={handleProductTypeSelect}
               isEditMode={isEditMode}

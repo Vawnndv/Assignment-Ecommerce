@@ -3,6 +3,7 @@ import { TextField, Button, Grid, InputAdornment } from '@mui/material';
 import { Product } from '../../../Models/ProductModel';
 
 interface ProductDetailsFormProps {
+  isLoading: boolean;
   product: Product;
   onSubmit: (data: Product) => void;
   setProduct: (data: Product | any) => void;
@@ -10,7 +11,7 @@ interface ProductDetailsFormProps {
   isValid: boolean;
 }
 
-const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ product, setProduct, onSubmit, isEditMode, isValid }) => {
+const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ isLoading, product, setProduct, onSubmit, isEditMode, isValid }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProduct((prevData: Product) => ({ ...prevData, [name]: value } as Product));
@@ -78,8 +79,8 @@ const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ product, setPro
         </Grid>
         {isEditMode && (
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button type="submit" variant="contained" color="primary" disabled={!isValid}>
-              Save
+            <Button type="submit" variant="contained" color="primary" disabled={!isValid || isLoading}>
+              {isLoading ? 'Wait a minute' : 'Save'}
             </Button>
           </Grid>
         )}

@@ -7,12 +7,13 @@ import EditProductTypeModal from './EditProductTypeModal';
 import AddIcon from '@mui/icons-material/Add';
 
 interface ProductTypeFormProps {
+  deleteImages: (url: string) => void;
   productTypes: ProductType[];
   handleProductTypeChange: (types: ProductType[]) => void;
   isEditMode: boolean; // Adding isEditMode prop
 }
 
-const ProductTypeForm: React.FC<ProductTypeFormProps> = ({ productTypes, handleProductTypeChange, isEditMode }) => {
+const ProductTypeForm: React.FC<ProductTypeFormProps> = ({ deleteImages, productTypes, handleProductTypeChange, isEditMode }) => {
   const [types, setTypes] = useState<ProductType[]>(productTypes);
   const [editType, setEditType] = useState<ProductType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,6 +95,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({ productTypes, handleP
         </Table>
       </TableContainer>
       <EditProductTypeModal
+        deleteImages={deleteImages}
         open={isModalOpen}
         productType={editType}
         onClose={handleCloseModal}
