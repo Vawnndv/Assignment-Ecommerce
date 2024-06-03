@@ -13,24 +13,31 @@ import NotFound from './pages/NotFound/NotFound';
 
 export function App() {
   const [rememberMe, setRememberMe] = useState(false);
-
   return (
-    <Routes> 
-      <Route path="/Login" element={<Login rememberMe={rememberMe} setRememberMe={setRememberMe} />} />
-      <Route path='/' element={<Layout/>}>
+    <Routes>
+      <Route
+        path="/Login"
+        element={
+          <Login rememberMe={rememberMe} setRememberMe={setRememberMe} />
+        }
+      />
+      <Route path="/" element={<Layout />}>
         <Route path="*" element={<NotFound />} />
         <Route element={<ProtectedRouter />}>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<Home />} />
           <Route path="/categories/:id" element={<CategoryManagement />} />
           <Route path="/categories" element={<CategoryManagement />} />
-          <Route path="/products" element={<ProductManagement/>} />
+          <Route path="/products" element={<ProductManagement />} />
           <Route path="/products/new" element={<ProductFormPage />} />
-          <Route path="/products/:productId/edit" element={<ProductFormPage />} />
-          <Route path="/users" element={<UserManagement/>} />
+          <Route
+            path="/products/:productId/edit"
+            element={<ProductFormPage />}
+          />
+          <Route path="/users" element={<UserManagement />} />
         </Route>
       </Route>
     </Routes>
-  )
+  );
 }
 
 export function WrappedApp() {

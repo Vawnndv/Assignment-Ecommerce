@@ -12,6 +12,7 @@ interface RegisterModel {
 interface UserInfoModel {
   email: string;
   username: string;
+  role: string;
   token: string;
 }
 

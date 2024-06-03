@@ -36,11 +36,16 @@ namespace Backend.Controllers
 
             if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
 
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles == null || roles.Count == 0) return Unauthorized("User has no role assigned!");
+
             return Ok(
                 new NewUserVmDto
                 {
                     UserName = user.UserName,
                     Email = user.Email,
+                    Role = roles.FirstOrDefault(),
                     Token = _tokenService.CreateToken(user)
                 }
             );
@@ -73,6 +78,7 @@ namespace Backend.Controllers
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
+                                Role = "User",
                                 Token = _tokenService.CreateToken(appUser)
                             }
                         );
@@ -119,6 +125,7 @@ namespace Backend.Controllers
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
+                                Role = "Admin",
                                 Token = _tokenService.CreateToken(appUser)
                             }
                         );
