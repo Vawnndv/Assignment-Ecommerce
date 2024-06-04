@@ -1,10 +1,12 @@
 ﻿using Backend.Data;
 using Backend.Interfaces;
-using Backend.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Backend.Mappers;
+using Backend.Models;
+using Backend.UnitOfWork.Category;
+using Microsoft.AspNetCore.Mvc;
 using Shared_ViewModels.Category;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -12,13 +14,11 @@ namespace Backend.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        private readonly ICategoryRepository _categoryRepo;
+        private readonly ICategoryUnitOfWork _unitOfWork;
 
-        public CategoryController(ApplicationDBContext context, ICategoryRepository categoryRepo)
+        public CategoryController(ICategoryUnitOfWork unitOfWork)
         {
-            _context = context;
-            _categoryRepo = categoryRepo;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/category
@@ -28,7 +28,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var categories = await _categoryRepo.GetAllAsync();
+            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
 
             var categoryDto = categories.Select(s => s.ToCategoryDto());
 
@@ -42,7 +42,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var category = await _categoryRepo.GetByIdAsync(id);
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
 
             if (category == null)
             {
@@ -61,18 +61,21 @@ namespace Backend.Controllers
 
             var categoryModel = categoryDto.ToCategoryFromCreateDTO();
 
-            await _categoryRepo.CreateAsync(categoryModel);
+            await _unitOfWork.CategoryRepository.CreateAsync(categoryModel);
+            await _unitOfWork.CompleteAsync();
+
             return CreatedAtAction(nameof(GetById), new { id = categoryModel.Id }, categoryModel.ToCategoryDto());
         }
 
         // PUT: api/category/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute]int id, [FromBody] UpdateCategoryVmDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCategoryVmDto updateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var categoryModel = await _categoryRepo.UpdateAsync(id, updateDto);
+            var categoryModel = await _unitOfWork.CategoryRepository.UpdateAsync(id, updateDto);
+            await _unitOfWork.CompleteAsync();
 
             if (categoryModel == null)
             {
@@ -89,7 +92,8 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var categoryModel = await _categoryRepo.DeleteAsync(id);
+            var categoryModel = await _unitOfWork.CategoryRepository.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
 
             if (categoryModel == null)
             {
@@ -102,7 +106,7 @@ namespace Backend.Controllers
         [HttpGet("{categoryId}/parent-categories")]
         public async Task<IActionResult> GetParentCategories(int categoryId)
         {
-            var parentCategories = await _categoryRepo.GetParentCategoriesAsync(categoryId);
+            var parentCategories = await _unitOfWork.CategoryRepository.GetParentCategoriesAsync(categoryId);
 
             if (parentCategories == null || parentCategories.Count == 0)
             {

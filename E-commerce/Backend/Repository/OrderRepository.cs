@@ -3,15 +3,17 @@ using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Shared_ViewModels.Cart;
 using Shared_ViewModels.Order;
 using Shared_ViewModels.Payment;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Backend.Repository
 {
     public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDBContext _context;
+
         public OrderRepository(ApplicationDBContext context)
         {
             _context = context;
@@ -19,11 +21,10 @@ namespace Backend.Repository
 
         public async Task<Order?> CreateAsync(AppUser appUser, CreatePaymentRequestVmDto paymentDto)
         {
-            var cart = _context.Carts
+            var cart = await _context.Carts
                 .Include(c => c.CartItems)
-                .Where(c => c.AppUserId == appUser.Id)
-                .FirstOrDefault();
-            
+                .FirstOrDefaultAsync(c => c.AppUserId == appUser.Id);
+
             if (cart == null)
             {
                 return null;
@@ -33,9 +34,8 @@ namespace Backend.Repository
 
             // Delete Old Cart And Create new Order
             _context.Carts.Remove(cart);
-
             await _context.Orders.AddAsync(orderModel);
-            await _context.SaveChangesAsync();
+
             return orderModel;
         }
 
@@ -48,7 +48,6 @@ namespace Backend.Repository
                 return null;
             }
             _context.Orders.Remove(orderModel);
-            await _context.SaveChangesAsync();
             return orderModel;
         }
 
@@ -88,8 +87,6 @@ namespace Backend.Repository
 
             existingOrder.Status = orderDto.Status;
             existingOrder.Payment.PaymentMethod = orderDto.Payment.PaymentMethod;
-
-            await _context.SaveChangesAsync();
 
             return existingOrder;
         }

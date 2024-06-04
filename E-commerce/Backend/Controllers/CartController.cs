@@ -2,10 +2,11 @@
 using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
+using Backend.UnitOfWork.Cart;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shared_ViewModels.Cart;
-using Shared_ViewModels.Product;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -13,13 +14,13 @@ namespace Backend.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICartRepository _cartRepo;
+        private readonly ICartUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
 
-        public CartController(UserManager<AppUser> userManager, ICartRepository cartRepo)
+        public CartController(UserManager<AppUser> userManager, ICartUnitOfWork unitOfWork)
         {
             _userManager = userManager;
-            _cartRepo = cartRepo;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/cart
@@ -32,7 +33,7 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cart = await _cartRepo.GetAllAsync(appUser);
+            var cart = await _unitOfWork.CartRepository.GetAllAsync(appUser);
 
             if (cart == null)
             {
@@ -51,7 +52,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var cart = await _cartRepo.GetByIdAsync(id);
+            var cart = await _unitOfWork.CartRepository.GetByIdAsync(id);
 
             if (cart == null)
             {
@@ -73,7 +74,9 @@ namespace Backend.Controllers
 
             var cartModel = cartDto.ToCartFromCreateDTO(appUser);
 
-            await _cartRepo.CreateAsync(cartModel);
+            await _unitOfWork.CartRepository.CreateAsync(cartModel);
+            await _unitOfWork.CompleteAsync();
+
             return CreatedAtAction(nameof(GetById), new { id = cartModel.Id }, cartModel.ToCartDto());
         }
 
@@ -87,7 +90,8 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var cartModel = await _cartRepo.UpdateAsync(updateDto, appUser);
+            var cartModel = await _unitOfWork.CartRepository.UpdateAsync(updateDto, appUser);
+            await _unitOfWork.CompleteAsync();
 
             if (cartModel == null)
             {
@@ -107,9 +111,10 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var productModel = await _cartRepo.DeleteAsync(appUser);
+            var cartModel = await _unitOfWork.CartRepository.DeleteAsync(appUser);
+            await _unitOfWork.CompleteAsync();
 
-            if (productModel == null)
+            if (cartModel == null)
             {
                 return NotFound();
             }

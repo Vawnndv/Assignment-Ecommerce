@@ -1,11 +1,12 @@
 ﻿using Backend.Interfaces;
 using Backend.Mappers;
-using Backend.Models;
-using Backend.Repository;
+using Backend.UnitOfWork.Product;
 using Microsoft.AspNetCore.Mvc;
-using Shared_ViewModels.Category;
-using Shared_ViewModels.Product;
 using Shared_ViewModels.Helpers;
+using Shared_ViewModels.Product;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -13,11 +14,11 @@ namespace Backend.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepo;
+        private readonly IProductUnitOfWork _unitOfWork;
 
-        public ProductController(IProductRepository productRepo)
+        public ProductController(IProductUnitOfWork unitOfWork)
         {
-            _productRepo = productRepo;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/category
@@ -27,7 +28,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var products = await _productRepo.GetAllAsync(query);
+            var products = await _unitOfWork.ProductRepository.GetAllAsync(query);
 
             var productsDto = products.Select(s => s.ToProductDto());
 
@@ -41,7 +42,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var product = await _productRepo.GetByIdAsync(id);
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -58,7 +59,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var products = await _productRepo.GetByCategoryAsync(id, query);
+            var products = await _unitOfWork.ProductRepository.GetByCategoryAsync(id, query);
 
             var productsDto = products.Select(s => s.ToProductDto());
 
@@ -72,7 +73,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var num = await _productRepo.GetNumOfProductPagesByCategory(id, query);
+            var num = await _unitOfWork.ProductRepository.GetNumOfProductPagesByCategory(id, query);
 
             return Ok(num);
         }
@@ -85,8 +86,10 @@ namespace Backend.Controllers
                 return BadRequest(ModelState);
 
             var productModel = productDto.ToProductFromCreateDTO();
-       
-            await _productRepo.CreateAsync(productModel);
+
+            await _unitOfWork.ProductRepository.CreateAsync(productModel);
+            await _unitOfWork.CompleteAsync();
+
             return CreatedAtAction(nameof(GetById), new { id = productModel.Id }, productModel.ToProductDto());
         }
 
@@ -97,12 +100,14 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productModel = await _productRepo.UpdateAsync(id, updateDto);
+            var productModel = await _unitOfWork.ProductRepository.UpdateAsync(id, updateDto);
 
             if (productModel == null)
             {
                 return NotFound();
             }
+
+            await _unitOfWork.CompleteAsync();
 
             return Ok(productModel.ToProductDto());
         }
@@ -114,12 +119,14 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productModel = await _productRepo.DeleteAsync(id);
+            var productModel = await _unitOfWork.ProductRepository.DeleteAsync(id);
 
             if (productModel == null)
             {
                 return NotFound();
             }
+
+            await _unitOfWork.CompleteAsync();
 
             return NoContent();
         }

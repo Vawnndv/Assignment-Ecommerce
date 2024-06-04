@@ -3,6 +3,11 @@ using Backend.Interfaces;
 using Backend.Models;
 using Backend.Repository;
 using Backend.Service;
+using Backend.UnitOfWork.Cart;
+using Backend.UnitOfWork.Category;
+using Backend.UnitOfWork.Order;
+using Backend.UnitOfWork.Product;
+using Backend.UnitOfWork.ProductRating;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +113,12 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductRatingRepository, ProductRatingRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+builder.Services.AddScoped<ICartUnitOfWork, CartUnitOfWork>();
+builder.Services.AddScoped<ICategoryUnitOfWork, CategoryUnitOfWork>();
+builder.Services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
+builder.Services.AddScoped<IProductUnitOfWork, ProductUnitOfWork>();
+builder.Services.AddScoped<IProductRatingUnitOfWork, ProductRatingUnitOfWork>();
 
 var app = builder.Build();
 

@@ -58,7 +58,6 @@ namespace Backend.Repository
         public async Task<Product> CreateAsync(Product productModel)
         {
             await _context.Products.AddAsync(productModel);
-            await _context.SaveChangesAsync();
 
             return productModel;
         }
@@ -72,7 +71,6 @@ namespace Backend.Repository
                 return null;
             }
             _context.Products.Remove(productModel);
-            await _context.SaveChangesAsync();
             return productModel;
         }
 
@@ -237,8 +235,6 @@ namespace Backend.Repository
                 }
             }
 
-            await _context.SaveChangesAsync();
-    
             return existingProduct;
         }
 

@@ -2,11 +2,13 @@
 using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
+using Backend.UnitOfWork.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Shared_ViewModels.Cart;
 using Shared_ViewModels.Order;
 using Shared_ViewModels.Payment;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
@@ -14,12 +16,12 @@ namespace Backend.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly IOrderRepository _orderRepo;
+        private readonly IOrderUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
 
-        public OrderController(UserManager<AppUser> userManager, IOrderRepository orderRepo)
+        public OrderController(UserManager<AppUser> userManager, IOrderUnitOfWork unitOfWork)
         {
-            _orderRepo = orderRepo;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
 
@@ -33,7 +35,7 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var order = await _orderRepo.GetAllAsync(appUser);
+            var order = await _unitOfWork.OrderRepository.GetAllAsync(appUser);
 
             if (order == null)
             {
@@ -52,7 +54,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var order = await _orderRepo.GetByIdAsync(id);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(id);
 
             if (order == null)
             {
@@ -72,7 +74,8 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var orderModel = await _orderRepo.CreateAsync(appUser, paymentDto);
+            var orderModel = await _unitOfWork.OrderRepository.CreateAsync(appUser, paymentDto);
+            await _unitOfWork.CompleteAsync();
             return CreatedAtAction(nameof(GetById), new { id = orderModel.Id }, orderModel.ToOrderDto());
         }
 
@@ -83,10 +86,8 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
-
-            var orderModel = await _orderRepo.UpdateAsync(id, updateDto);
+            var orderModel = await _unitOfWork.OrderRepository.UpdateAsync(id, updateDto);
+            await _unitOfWork.CompleteAsync();
 
             if (orderModel == null)
             {
@@ -103,7 +104,8 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var orderModel = await _orderRepo.DeleteAsync(id);
+            var orderModel = await _unitOfWork.OrderRepository.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
 
             if (orderModel == null)
             {

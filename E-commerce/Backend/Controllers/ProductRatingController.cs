@@ -2,6 +2,7 @@
 using Backend.Interfaces;
 using Backend.Mappers;
 using Backend.Models;
+using Backend.UnitOfWork.ProductRating;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,12 @@ namespace Backend.Controllers
     public class ProductRatingController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IProductRatingRepository _productRatingRepo;
+        private readonly IProductRatingUnitOfWork _productRatingUnitOfWork;
 
-        public ProductRatingController(UserManager<AppUser> userManager, IProductRatingRepository productRatingRepo)
+        public ProductRatingController(UserManager<AppUser> userManager, IProductRatingUnitOfWork productRatingUnitOfWork)
         {
             _userManager = userManager;
-            _productRatingRepo = productRatingRepo;
+            _productRatingUnitOfWork = productRatingUnitOfWork;
         }
 
         // GET: api/productrating
@@ -29,7 +30,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productRatings = await _productRatingRepo.GetAllByProductIdAsync(productId);
+            var productRatings = await _productRatingUnitOfWork.ProductRatingRepository.GetAllByProductIdAsync(productId);
 
             var productRatingDto = productRatings.Select(s => s.ToProductRatingDto());
 
@@ -43,7 +44,7 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productRating = await _productRatingRepo.GetByIdAsync(id);
+            var productRating = await _productRatingUnitOfWork.ProductRatingRepository.GetByIdAsync(id);
 
             if (productRating == null)
             {
@@ -66,7 +67,8 @@ namespace Backend.Controllers
 
             var productRatingModel = productRatingDto.ToProductRatingFromCreateDTO(appUser);
 
-            await _productRatingRepo.CreateAsync(productRatingModel);
+            await _productRatingUnitOfWork.ProductRatingRepository.CreateAsync(productRatingModel);
+            await _productRatingUnitOfWork.CompleteAsync();
             return CreatedAtAction(nameof(GetById), new { id = productRatingModel.Id }, productRatingModel.ToProductRatingDto());
         }
 
@@ -81,13 +83,14 @@ namespace Backend.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var productRatingModel = await _productRatingRepo.UpdateAsync(appUser, id, updateDto);
+            var productRatingModel = await _productRatingUnitOfWork.ProductRatingRepository.UpdateAsync(appUser, id, updateDto);
 
             if (productRatingModel == null)
             {
                 return NotFound();
             }
 
+            await _productRatingUnitOfWork.CompleteAsync();
             return Ok(productRatingModel.ToProductRatingDto());
         }
 
@@ -98,13 +101,14 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var productRatingModel = await _productRatingRepo.DeleteAsync(id);
+            var productRatingModel = await _productRatingUnitOfWork.ProductRatingRepository.DeleteAsync(id);
 
             if (productRatingModel == null)
             {
                 return NotFound();
             }
 
+            await _productRatingUnitOfWork.CompleteAsync();
             return NoContent();
         }
     }

@@ -2,14 +2,18 @@
 using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Shared_ViewModels.Category;
 using Shared_ViewModels.Product;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Repository
 {
     public class ProductRatingRepository : IProductRatingRepository
     {
         private readonly ApplicationDBContext _context;
+
         public ProductRatingRepository(ApplicationDBContext context)
         {
             _context = context;
@@ -18,7 +22,6 @@ namespace Backend.Repository
         public async Task<ProductRating> CreateAsync(ProductRating productRatingModel)
         {
             await _context.ProductRatings.AddAsync(productRatingModel);
-            await _context.SaveChangesAsync();
             return productRatingModel;
         }
 
@@ -31,7 +34,6 @@ namespace Backend.Repository
                 return null;
             }
             _context.ProductRatings.Remove(productRatingModel);
-            await _context.SaveChangesAsync();
             return productRatingModel;
         }
 
@@ -45,9 +47,9 @@ namespace Backend.Repository
             return await _context.ProductRatings.FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public Task<bool> ProductRatingExists(int id)
+        public async Task<bool> ProductRatingExists(int id)
         {
-            return _context.ProductRatings.AnyAsync(s => s.Id == id);
+            return await _context.ProductRatings.AnyAsync(s => s.Id == id);
         }
 
         public async Task<ProductRating?> UpdateAsync(AppUser appUser, int id, UpdateProductRatingVmDto productRatingDto)
@@ -62,8 +64,6 @@ namespace Backend.Repository
             existingProductRating.Rating = productRatingDto.Rating;
             existingProductRating.Review = productRatingDto.Review;
             existingProductRating.AppUserId = appUser.Id;
-
-            await _context.SaveChangesAsync();
 
             return existingProductRating;
         }

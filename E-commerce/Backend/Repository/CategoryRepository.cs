@@ -3,12 +3,16 @@ using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared_ViewModels.Category;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Backend.Repository
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly ApplicationDBContext _context;
+
         public CategoryRepository(ApplicationDBContext context)
         {
             _context = context;
@@ -17,20 +21,18 @@ namespace Backend.Repository
         public async Task<Category> CreateAsync(Category categoryModel)
         {
             await _context.Categories.AddAsync(categoryModel);
-            await _context.SaveChangesAsync();
             return categoryModel;
         }
 
         public async Task<Category?> DeleteAsync(int id)
         {
             var categoryModel = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-
             if (categoryModel == null)
             {
                 return null;
             }
+
             _context.Categories.Remove(categoryModel);
-            await _context.SaveChangesAsync();
             return categoryModel;
         }
 
@@ -52,7 +54,6 @@ namespace Backend.Repository
         public async Task<Category?> UpdateAsync(int id, UpdateCategoryVmDto categoryDto)
         {
             var existingCategory = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-
             if (existingCategory == null)
             {
                 return null;
@@ -60,9 +61,6 @@ namespace Backend.Repository
 
             existingCategory.Name = categoryDto.Name;
             existingCategory.Description = categoryDto.Description;
-
-            await _context.SaveChangesAsync();
-
             return existingCategory;
         }
 
@@ -70,7 +68,7 @@ namespace Backend.Repository
         {
             var category = await _context.Categories.FindAsync(categoryId);
             var parentCategories = new List<Category>();
-            
+
             if (category != null)
             {
                 parentCategories.Add(category);

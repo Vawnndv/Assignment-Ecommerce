@@ -3,14 +3,14 @@ using Backend.Interfaces;
 using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Shared_ViewModels.Cart;
-using Shared_ViewModels.Category;
-using Shared_ViewModels.Product;
+using System.Threading.Tasks;
 
 namespace Backend.Repository
 {
     public class CartRepository : ICartRepository
     {
         private readonly ApplicationDBContext _context;
+
         public CartRepository(ApplicationDBContext context)
         {
             _context = context;
@@ -19,20 +19,18 @@ namespace Backend.Repository
         public async Task<Cart> CreateAsync(Cart cartModel)
         {
             await _context.Carts.AddAsync(cartModel);
-            await _context.SaveChangesAsync();
             return cartModel;
         }
 
         public async Task<Cart?> DeleteAsync(AppUser appUser)
         {
             var cartModel = await _context.Carts.FirstOrDefaultAsync(x => x.AppUserId == appUser.Id);
-
             if (cartModel == null)
             {
                 return null;
             }
+
             _context.Carts.Remove(cartModel);
-            await _context.SaveChangesAsync();
             return cartModel;
         }
 
@@ -99,8 +97,6 @@ namespace Backend.Repository
             }
 
             existingCart.TotalAmount = existingCart.CalculateTotalAmount();
-
-            await _context.SaveChangesAsync();
 
             return existingCart;
         }
