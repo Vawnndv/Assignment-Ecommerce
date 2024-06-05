@@ -1,29 +1,11 @@
-using Ecommerce_Customers_Site.Handlers;
-using Ecommerce_Customers_Site.Middleware;
-using Ecommerce_Customers_Site.Services.Account;
-using Ecommerce_Customers_Site.Services.Cart;
-using Ecommerce_Customers_Site.Services.Category;
-using Ecommerce_Customers_Site.Services.Product;
+using Ecommerce_Customers_Site.Extensions;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register IHttpContextAccessor and AuthTokenHandler
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddTransient<AuthTokenHandler>();
-
 // Add services to the container.
-var baseUri = new Uri(builder.Configuration["ApiSettings:BaseUri"]);
-
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient<ICategoryAPIService, CategoryAPIService>(c =>
-c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
-builder.Services.AddHttpClient<IProductAPIService, ProductAPIService>(c =>
-c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
-builder.Services.AddHttpClient<IAccountAPIService, AccountAPIService>(c =>
-c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
-builder.Services.AddHttpClient<ICartAPIService, CartAPIService>(c =>
-c.BaseAddress = baseUri).AddHttpMessageHandler<AuthTokenHandler>();
+builder.Services.AddCustomServices(builder.Configuration);
 
 // Register to use in View Component
 builder.Services.AddHttpContextAccessor();
@@ -31,11 +13,7 @@ builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+app.UseCustomExceptionHandler();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -43,13 +21,13 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Use custom error handling middleware
-app.UseMiddleware<ErrorHandlingMiddleware>();
-
+app.UseCustomMiddleware();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.ConfigureRouting();
+});
 
 app.Run();
