@@ -16,7 +16,7 @@ using Backend.UnitOfWork.Product;
 using Backend.UnitOfWork.ProductRating;
 using System.Text;
 
-namespace Backend.Extensions
+namespace Backend.Extentions
 {
     public static class ServiceCollectionExtensions
     {

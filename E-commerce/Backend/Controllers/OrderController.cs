@@ -32,10 +32,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var order = await _unitOfWork.OrderRepository.GetAllAsync(appUser);
+            var order = await _unitOfWork.OrderRepository.GetAllAsync(userId);
 
             if (order == null)
             {
@@ -71,10 +70,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var orderModel = await _unitOfWork.OrderRepository.CreateAsync(appUser, paymentDto);
+            var orderModel = await _unitOfWork.OrderRepository.CreateAsync(userId, paymentDto);
             await _unitOfWork.CompleteAsync();
             return CreatedAtAction(nameof(GetById), new { id = orderModel.Id }, orderModel.ToOrderDto());
         }

@@ -19,18 +19,18 @@ namespace Backend.Repository
             _context = context;
         }
 
-        public async Task<Order?> CreateAsync(AppUser appUser, CreatePaymentRequestVmDto paymentDto)
+        public async Task<Order?> CreateAsync(string userId, CreatePaymentRequestVmDto paymentDto)
         {
             var cart = await _context.Carts
                 .Include(c => c.CartItems)
-                .FirstOrDefaultAsync(c => c.AppUserId == appUser.Id);
+                .FirstOrDefaultAsync(c => c.AppUserId == userId);
 
             if (cart == null)
             {
                 return null;
             }
 
-            var orderModel = cart.ToOrderFromCart(appUser, paymentDto);
+            var orderModel = cart.ToOrderFromCart(userId, paymentDto);
 
             // Delete Old Cart And Create new Order
             _context.Carts.Remove(cart);
@@ -51,12 +51,12 @@ namespace Backend.Repository
             return orderModel;
         }
 
-        public async Task<List<Order>> GetAllAsync(AppUser appUser)
+        public async Task<List<Order>> GetAllAsync(string userId)
         {
             return await _context.Orders
                 .Include(c => c.OrderItems)
                 .Include(o => o.Payment)
-                .Where(c => c.AppUserId == appUser.Id)
+                .Where(c => c.AppUserId == userId)
                 .ToListAsync();
         }
 

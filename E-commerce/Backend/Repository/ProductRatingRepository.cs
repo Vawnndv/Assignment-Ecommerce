@@ -52,7 +52,7 @@ namespace Backend.Repository
             return await _context.ProductRatings.AnyAsync(s => s.Id == id);
         }
 
-        public async Task<ProductRating?> UpdateAsync(AppUser appUser, int id, UpdateProductRatingVmDto productRatingDto)
+        public async Task<ProductRating?> UpdateAsync(string userId, int id, UpdateProductRatingVmDto productRatingDto)
         {
             var existingProductRating = await _context.ProductRatings.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -63,7 +63,7 @@ namespace Backend.Repository
 
             existingProductRating.Rating = productRatingDto.Rating;
             existingProductRating.Review = productRatingDto.Review;
-            existingProductRating.AppUserId = appUser.Id;
+            existingProductRating.AppUserId = userId;
 
             return existingProductRating;
         }

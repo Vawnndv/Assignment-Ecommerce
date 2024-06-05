@@ -7,9 +7,9 @@ namespace Backend.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<List<Order>> GetAllAsync(AppUser appUser);
+        Task<List<Order>> GetAllAsync(string userId);
         Task<Order?> GetByIdAsync(int id);
-        Task<Order?> CreateAsync(AppUser appUser, CreatePaymentRequestVmDto paymentDto);
+        Task<Order?> CreateAsync(string userId, CreatePaymentRequestVmDto paymentDto);
         Task<Order?> UpdateAsync(int id, UpdateOrderVmDto orderDto);
         Task<Order?> DeleteAsync(int id);
         Task<bool> OrderExists(int id);

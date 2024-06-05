@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Backend.Extensions
+namespace Backend.Extentions
 {
     public static class CorsExtensions
     {

@@ -77,14 +77,14 @@ namespace Backend.Mappers
             };
         }
 
-        public static Order ToOrderFromCart(this Cart cartModel, AppUser appUser, CreatePaymentRequestVmDto paymentDto)
+        public static Order ToOrderFromCart(this Cart cartModel, string userId, CreatePaymentRequestVmDto paymentDto)
         {
             var orderModel = new Order
             {
                 OrderDate = DateTime.Now,
                 Status = "Checkout",
                 TotalAmount = cartModel.TotalAmount,
-                AppUserId = appUser.Id,
+                AppUserId = userId,
             };
 
             var paymentModel = new Payment

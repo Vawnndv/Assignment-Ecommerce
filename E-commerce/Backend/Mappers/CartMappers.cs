@@ -36,11 +36,11 @@ namespace Backend.Mappers
                 UnitPrice = cartDto.UnitPrice
             };
         }
-        public static Cart ToCartFromCreateDTO(this CreateCartRequestVmDto cartDto, AppUser appUser)
+        public static Cart ToCartFromCreateDTO(this CreateCartRequestVmDto cartDto, string userId)
         {
             return new Cart
             {
-                AppUserId = appUser.Id,
+                AppUserId = userId,
                 CartItems = cartDto.CartItems.Select(s => s.ToCartItemFromCreateDTO()).ToList(),
                 // Calc Total Amount
                 TotalAmount = cartDto.CartItems.Sum(item => item.Quantity * item.UnitPrice) 

@@ -17,14 +17,14 @@ namespace Backend.Mappers
             };
         }
 
-        public static ProductRating ToProductRatingFromCreateDTO(this CreateProductRatingRequestVmDto productRatingDto, AppUser appUser)
+        public static ProductRating ToProductRatingFromCreateDTO(this CreateProductRatingRequestVmDto productRatingDto, string userId)
         {
             return new ProductRating
             {
                 Rating = productRatingDto.Rating,
                 Review = productRatingDto.Review,
                 ProductId = productRatingDto.ProductId,
-                AppUserId = appUser.Id,
+                AppUserId = userId,
             };
         }
     }

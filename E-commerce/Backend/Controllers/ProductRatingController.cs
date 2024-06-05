@@ -62,10 +62,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var productRatingModel = productRatingDto.ToProductRatingFromCreateDTO(appUser);
+            var productRatingModel = productRatingDto.ToProductRatingFromCreateDTO(userId);
 
             await _productRatingUnitOfWork.ProductRatingRepository.CreateAsync(productRatingModel);
             await _productRatingUnitOfWork.CompleteAsync();
@@ -80,10 +79,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var productRatingModel = await _productRatingUnitOfWork.ProductRatingRepository.UpdateAsync(appUser, id, updateDto);
+            var productRatingModel = await _productRatingUnitOfWork.ProductRatingRepository.UpdateAsync(userId, id, updateDto);
 
             if (productRatingModel == null)
             {

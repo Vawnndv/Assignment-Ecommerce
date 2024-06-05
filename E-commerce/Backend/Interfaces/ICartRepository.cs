@@ -6,11 +6,11 @@ namespace Backend.Interfaces
 {
     public interface ICartRepository
     {
-        Task<Cart?> GetAllAsync(AppUser appUser);
+        Task<Cart?> GetAllAsync(string userId);
         Task<Cart?> GetByIdAsync(int id);
         Task<Cart> CreateAsync(Cart cartModel);
-        Task<Cart?> UpdateAsync(UpdateCartVmDto cartDto, AppUser appUser);
-        Task<Cart?> DeleteAsync(AppUser appUser);
+        Task<Cart?> UpdateAsync(UpdateCartVmDto cartDto, string userId);
+        Task<Cart?> DeleteAsync(string userId);
         Task<bool> CartExists(int id);
     }
 }

@@ -30,10 +30,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var cart = await _unitOfWork.CartRepository.GetAllAsync(appUser);
+            var cart = await _unitOfWork.CartRepository.GetAllAsync(userId);
 
             if (cart == null)
             {
@@ -69,10 +68,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var cartModel = cartDto.ToCartFromCreateDTO(appUser);
+            var cartModel = cartDto.ToCartFromCreateDTO(userId);
 
             await _unitOfWork.CartRepository.CreateAsync(cartModel);
             await _unitOfWork.CompleteAsync();
@@ -87,10 +85,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var cartModel = await _unitOfWork.CartRepository.UpdateAsync(updateDto, appUser);
+            var cartModel = await _unitOfWork.CartRepository.UpdateAsync(updateDto, userId);
             await _unitOfWork.CompleteAsync();
 
             if (cartModel == null)
@@ -108,10 +105,9 @@ namespace Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var username = User.GetUsername();
-            var appUser = await _userManager.FindByNameAsync(username);
+            var userId = User.GetUserId();
 
-            var cartModel = await _unitOfWork.CartRepository.DeleteAsync(appUser);
+            var cartModel = await _unitOfWork.CartRepository.DeleteAsync(userId);
             await _unitOfWork.CompleteAsync();
 
             if (cartModel == null)

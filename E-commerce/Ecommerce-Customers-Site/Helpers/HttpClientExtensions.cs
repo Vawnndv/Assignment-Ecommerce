@@ -8,17 +8,11 @@ namespace Ecommerce_Customers_Site.Helpers
     {
         public static async Task<T> ReadContentAsync<T>(this HttpResponseMessage response)
         {
-            //if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            //{
-            //    throw new UnauthorizedAccessException("Token has expired");
-            //}
-
             if (response.IsSuccessStatusCode == false)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync();
                 throw new ApplicationException($"{errorMessage}");
             }
-                //throw new ApplicationException($"Something went wrong calling the API: {response.ReasonPhrase}");
 
             var dataAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
